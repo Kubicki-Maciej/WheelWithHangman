@@ -273,3 +273,182 @@ addLife(5);
 // function picked
 
 // 1 word => second row || 2 words => second third || 3 words => first second third
+
+/*
+
+Wheel logic
+
+*/
+
+const wheel = document.getElementById("wheel");
+const spinBtn = document.getElementById("spin-btn");
+const finalValue = document.getElementById("final-value");
+
+// how big and how many wheels are and values on wheel
+const valuesWheel = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
+function createDegreeValues(dataValues) {
+  let values = [];
+  let minDegree = 0;
+  let pieceDegree = 360 / dataValues.length;
+  console.log(pieceDegree);
+  for (i = 0; dataValues.length > i; i++) {
+    if (i == 0) {
+      values.push({
+        minDegree: minDegree,
+        maxDegree: minDegree + pieceDegree,
+        value: dataValues[i],
+      });
+    } else {
+      values.push({
+        minDegree: minDegree + 1,
+        maxDegree: minDegree + pieceDegree,
+        value: dataValues[i],
+      });
+    }
+    minDegree = pieceDegree + minDegree;
+  }
+  return values;
+}
+
+function reverseLabelValues(dataValues) {
+  const formatedValues = [];
+
+  const dataValuesDivided = dataValues.length / 4;
+
+  for (i = 0; dataValues.length > i; i++) {
+    if (i == 0) {
+      const tempList = [];
+
+      for (j = 0; dataValuesDivided > j; j++) {
+        tempList.push(dataValues[j]);
+      }
+      tempList.reverse().forEach((element) => {
+        formatedValues.push(element);
+      });
+      formatedValues.concat(tempList);
+    }
+    if (i >= dataValuesDivided) {
+      console.log(dataValues.length - i + dataValuesDivided - 1);
+      formatedValues.push(
+        dataValues[dataValues.length - i + dataValuesDivided - 1]
+      );
+    }
+  }
+
+  return formatedValues;
+}
+
+function createData(dataValues) {
+  const data = [];
+  for (i = 0; dataValues.length > i; i++) {
+    data.push(1);
+  }
+  return data;
+}
+
+console.log(reverseLabelValues(valuesWheel));
+console.log("test");
+const rotationValuesTest = createDegreeValues(valuesWheel);
+console.log(rotationValuesTest);
+console.log("test");
+
+let rotationValues = createDegreeValues(valuesWheel);
+
+function getLables(data) {
+  let labels = [];
+
+  for (i = 0; data.length > i; i++) {
+    labels.push(i + 1);
+  }
+  return labels;
+}
+//background color for each piece
+var pieColors = ["#8b35bc", "#006600"];
+//Create chart
+let myChart = new Chart(wheel, {
+  plugins: [ChartDataLabels],
+  type: "pie",
+  data: {
+    // labels: getLables(rotationValues),
+    labels: reverseLabelValues(valuesWheel),
+    //Settings for dataset/pie
+    datasets: [
+      {
+        backgroundColor: pieColors,
+        data: createData(valuesWheel),
+      },
+    ],
+  },
+  options: {
+    //Responsive chart
+    responsive: true,
+    animation: { duration: 0 },
+    plugins: {
+      //hide tooltip and legend
+      tooltip: false,
+      legend: {
+        display: false,
+      },
+      //display labels inside pie chart
+      datalabels: {
+        color: "#ffffff",
+        formatter: (_, context) => context.chart.data.labels[context.dataIndex],
+        font: { size: 24 },
+      },
+    },
+  },
+});
+//display value based on the randomAngle
+const valueGenerator = (angleValue) => {
+  console.log(angleValue);
+  for (let i of rotationValues) {
+    //if the angleValue is between min and max then display it
+    if (angleValue >= i.minDegree && angleValue <= i.maxDegree) {
+      finalValue.innerHTML = `<p>Value: ${i.value}</p>`;
+      spinBtn.disabled = false;
+      break;
+    }
+  }
+};
+//Spinner count
+let count = 0;
+//100 rotations for animation and last rotation for result
+let resultValue = 101;
+//Start spinning
+spinBtn.addEventListener("click", () => {
+  spinBtn.disabled = true;
+  //Empty final value
+  finalValue.innerHTML = `<p>Good Luck!</p>`;
+  //Generate random degrees to stop at
+  let randomDegree = Math.floor(Math.random() * 360);
+  console.log(randomDegree);
+  // randomDegree = 100;
+  // let randomDegree = Math.floor(Math.random() * (355 - 0 + 1) + 0);
+  //Interval for rotation animation
+  let rotationInterval = window.setInterval(() => {
+    //Set rotation for piechart
+    /*
+    Initially to make the piechart rotate faster we set resultValue to 101 so it rotates 101 degrees at a time and this reduces by 1 with every count. Eventually on last rotation we rotate by 1 degree at a time.
+    */
+    myChart.options.rotation = myChart.options.rotation + resultValue;
+    //Update chart with new value;
+    myChart.update();
+    //If rotation>360 reset it back to 0
+    if (myChart.options.rotation >= 360) {
+      // console.log(count);
+      count += 1;
+      resultValue -= 5;
+      myChart.options.rotation = 0;
+    }
+    if (count > 5 && myChart.options.rotation == randomDegree) {
+      console.log("myChart.options.rotation");
+      console.log(myChart.options.rotation);
+
+      valueGenerator(randomDegree);
+      clearInterval(rotationInterval);
+      count = 0;
+      resultValue = 101;
+    }
+  }, 10);
+});
