@@ -1,0 +1,59 @@
+.field {
+  height: 60px;
+  width: 50px;
+  background-color: red;
+  margin: 3px;
+  border-radius: 5px;
+}
+
+.letterfields {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.firstRowLettersField {
+  display: flex;
+  flex-direction: row;
+}
+.secondRowLettersField {
+  display: flex;
+  flex-direction: row;
+}
+.thirdRowLettersField {
+  display: flex;
+  flex-direction: row;
+}
+.fourthRowLettersField {
+  display: flex;
+  flex-direction: row;
+}
+
+.open {
+  background-color: whitesmoke;
+  border: black solid 1px;
+}
+
+.controlPanel {
+  height: 40px;
+  width: 500px;
+  background-color: lightpink;
+}
+
+.lifeBar {
+  display: flex;
+  flex-direction: row;
+}
+
+.hearth {
+  height: 40px;
+  width: 40px;
+  background-color: red;
+  margin-left: 10px;
+}
+
+.lost {
+  background-color: whitesmoke;
+  border: black solid 1px;
+}
