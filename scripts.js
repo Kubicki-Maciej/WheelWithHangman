@@ -17,6 +17,56 @@ function addLife(number) {
     container.appendChild(hearthField);
   }
 }
+let categoryNameElement = document.getElementById("categoryName");
+class CategoryAndCatchword {
+  constructor() {
+    this.category = "category";
+    this.catchword = "catchword";
+    this.catchwordCounter = 0;
+    this.lettersInCatchword = 0;
+  }
+
+  addCategory(category) {
+    this.category = category;
+    console.log(category);
+    this.showCategory();
+  }
+  addCatchword(catchword) {
+    this.catchword = catchword;
+  }
+
+  countsLettersInCatchWord() {
+    let splitedCatchWords = this.catchword.split(" ");
+    for (i = 0; i < splitedCatchWords.length; i++) {
+      this.lettersInCatchword += splitedCatchWords[i].split("").length;
+    }
+  }
+
+  showCategory() {
+    categoryNameElement.textContent = this.category;
+  }
+  checkWordsFull() {
+    if (this.catchwordCounter == this.lettersInCatchword) {
+      console.log("zakonczono gre");
+      console.log("zakonczono gre");
+      console.log("zakonczono gre");
+      console.log("zakonczono gre");
+      console.log("zakonczono gre");
+      console.log("zakonczono gre");
+      console.log("zakonczono gre");
+      console.log("zakonczono gre");
+      console.log("zakonczono gre");
+      console.log("zakonczono gre");
+    }
+  }
+  cleanCatchword() {
+    this.catchwordCounter = 0;
+    this.lettersInCatchword = 0;
+    this.catchword = "catchword";
+  }
+  cleanCategory() {}
+}
+const categoryAndCatchword = new CategoryAndCatchword();
 
 let orderWordIndexStart = [1, 1, 0, 0];
 
@@ -54,16 +104,28 @@ for (i = 0; i < 18; i++) {
   addInputField("thirdRowLettersField", i + 1);
 }
 
-let pickedWord = "Kambodza";
 let gameObject = {};
 
 function countLettersInWord(word) {
   return word.split("").length;
 }
 
-function startGame(Catchwords) {
+function startGame(Catchwords, Category) {
+  categoryAndCatchword.addCatchword(Catchwords);
+  categoryAndCatchword.addCategory(Category);
+  categoryAndCatchword.countsLettersInCatchWord();
   gameObject = pickedCachwordObject(Catchwords);
+
   putAllWords(gameObject.listOfWords);
+}
+
+function lowerAllWordsInList(listWords) {
+  let tempListGameObject = [];
+  for (i = 0; i < listWords.length; i++) {
+    let word = listWords[i];
+    tempListGameObject.push(word.toLowerCase());
+  }
+  return tempListGameObject;
 }
 
 function putAllWords(listCatchword) {
@@ -72,12 +134,12 @@ function putAllWords(listCatchword) {
   if (listOfRowsWord.length > 5) {
     // losowanie nowego hasla
   } else {
-    console.log(listCatchword);
+    // console.log(listCatchword);
     const wordsArrayElements = (element, index /*, array */) => {
       let positionOnTable = orderWordIndexStart[listCatchword.length - 1];
       let indexListOfRowsWord = positionOnTable + index;
-      console.log(indexListOfRowsWord);
-      console.log(element);
+      // console.log(indexListOfRowsWord);
+      // console.log(element);
       putEmptyWord(element, indexListOfRowsWord, index);
     };
     listCatchword.forEach(wordsArrayElements);
@@ -176,43 +238,52 @@ function checkingPickedLetter(word, letterPicked) {
     }
   }
   if (positions.length > 0) {
-    console.log(
-      `The letter "${letterPicked}" is in the word "${word}" at positions: ${positions.join(
-        ", "
-      )}.`
-    );
+    // console.log(
+    //   `The letter "${letterPicked}" is in the word "${word}" at positions: ${positions.join(
+    //     ", "
+    //   )}.`
+    // );
   } else {
-    console.log(`The letter "${letterPicked}" is not in the word "${word}".`);
+    // console.log(`The letter "${letterPicked}" is not in the word "${word}".`);
   }
   return positions;
 }
 
 function addLetterOnPositionRow(positions, letter, i, positionWordStart) {
   // dla jednego slowa i jednej rzedu
+
+  categoryAndCatchword.catchwordCounter += positions.length;
+
   let rowName = listOfRowsWord[i];
+  // console.log(rowName);
 
   for (i = 0; i < positions.length; i++) {
     let container = document.getElementById(
       `${positions[i] + 1 + positionWordStart}_${rowName}`
     );
-    console.log("jest litera a");
+
     container.textContent = letter;
   }
+  console.log("____________________________________");
+  console.log(categoryAndCatchword.catchwordCounter);
+  console.log(categoryAndCatchword.lettersInCatchword);
+  categoryAndCatchword.checkWordsFull();
 }
 
 function pickedCachwordObject(catchword) {
   let splitedCatchword = catchword.split(" ");
-
   let catchwordObject = {
-    listOfWords: splitedCatchword,
+    listOfWords: lowerAllWordsInList(splitedCatchword),
     numberOfWords: splitedCatchword.length,
   };
+  // console.log(catchwordObject.listOfWords);
 
   return catchwordObject;
 }
 
 function checkingAllRowsForLetter(letter) {
   /* POKAZUJE MI DOBRZE */
+  let booleanLetterInWords = false;
 
   for (i = 0; i < gameObject.numberOfWords; i++) {
     // add logic if word in row
@@ -220,37 +291,72 @@ function checkingAllRowsForLetter(letter) {
       gameObject.listOfWords[i],
       letter
     );
-
     if (positionPickedLetter.length) {
+      booleanLetterInWords = true;
       addLetterOnPositionRow(
         positionPickedLetter,
         letter,
-        i,
+        orderWordIndexStart[gameObject.numberOfWords - 1] + i,
         positionIndexStartLetter(gameObject.listOfWords[i], i)
       );
     } else {
       // tracisz zycie
-      console.log("No letter in word");
+      // console.log("No letter in word");
     }
   }
+
+  return booleanLetterInWords;
 }
 
 // console.log("list of rows words");
-console.log(listOfRowsWord);
 
-// putEmptyWord("kambodza", 1, 0);
+startGame("Lubie Placki i Ciastka", "Powiedzenia");
 
-startGame("lubie róże górze garmadużedeee");
-checkingAllRowsForLetter("a");
-checkingAllRowsForLetter("G");
-checkingAllRowsForLetter("r");
+checkingAllRowsForLetter("l");
+checkingAllRowsForLetter("u");
+checkingAllRowsForLetter("b");
+checkingAllRowsForLetter("i");
 checkingAllRowsForLetter("e");
+checkingAllRowsForLetter("p");
+checkingAllRowsForLetter("a");
+checkingAllRowsForLetter("c");
+checkingAllRowsForLetter("k");
+checkingAllRowsForLetter("s");
+checkingAllRowsForLetter("t");
+
+let inputElementPlayer = document.getElementById("playerNameInput");
+let btnElementPlayer = document.getElementById("btnPlayerReady");
+
+btnElementPlayer.addEventListener("click", () => {
+  console.log("KLIK");
+  player.addPlayerName();
+  // and close window
+
+  let popupWindow = document.getElementById("popupWindow");
+  popupWindow.classList.add("disablePopup");
+});
 
 class Player {
-  constructor(name, playerLife) {
-    this.name = name;
+  constructor(playerLife) {
+    this.name = "";
+    this.playerLife_static = playerLife;
     this.playerLife = playerLife;
+    this.points = 0;
+    this.updatePoints();
   }
+
+  playerRestart() {
+    this.name = "";
+    this.playerLife = this.playerLife_static;
+    this.points = 0;
+  }
+
+  addPlayerName() {
+    this.name = inputElementPlayer.value;
+    let playerNameElement = document.getElementById("userName");
+    playerNameElement.textContent = this.name;
+  }
+  showPlayerName() {}
 
   playerLoseLife() {
     let hearthContainer = document.getElementById(`hearth ${this.playerLife}`);
@@ -263,10 +369,138 @@ class Player {
       console.log("you lose");
     }
   }
+  updatePoints() {
+    let points = document.getElementById("points");
+    points.textContent = this.points;
+  }
+  addPoints(points) {
+    this.points += points;
+    this.updatePoints();
+  }
 }
 
-const player = new Player("maciej", 5);
-addLife(5);
+class GameLogic {
+  constructor() {
+    this.points = 0;
+    this.letterUsed = [];
+  }
+
+  spinWheel(result) {
+    console.log(result);
+    /* 
+    1 spinujesz wheelem / blokuje spining wheelem
+    2 sprawdzany jest wynik 
+    3 jezeli jest on pozytywny mozesz wybrac litere
+    4 jezeli litera jest to dostajesz punkty z losowania / jezeli nie ma tracisz zycie 
+    5 jezeli haslo zostalo odgadniete dostajesz 1000 punktow
+    6 odblokowuje spining wheelem
+    */
+    if (Number.isInteger(result)) {
+      console.log(confirmButton.value);
+      this.enableConfirmBtn();
+      // this.activateLetterListener();
+      this.pointWheel(result);
+    } else if (result === "bankrut") {
+      this.losePoints();
+      this.enableSpinWheel();
+    } else if (result === "tracisz życie") {
+      this.loseLife();
+      this.enableSpinWheel();
+    }
+  }
+  pointWheel(points) {
+    this.points = points;
+  }
+
+  loseLife() {
+    console.log("_____________________________");
+    console.log(player.playerLife);
+    player.playerLoseLife();
+  }
+  guessLetter(letter) {
+    let isLetter = checkingAllRowsForLetter(letter);
+    if (isLetter) {
+      this.addPointsToPlayer();
+      this.clearTempPoints();
+      // check if is complete
+      // if yes
+      // new game ?
+      // if not
+      // enable spin (new round)
+    } else {
+      this.clearTempPoints();
+      this.loseLife();
+    }
+  }
+  losePoints() {
+    player.points = 0;
+    player.updatePoints();
+  }
+  clearTempPoints() {
+    this.points = 0;
+  }
+  addPointsToPlayer() {
+    player.addPoints(this.points);
+    this.points = 0;
+  }
+
+  activateLetterListener() {
+    console.log("button clicked");
+    let pickedLetter = this.letterFromInputElement();
+    if (pickedLetter) {
+      this.guessLetter(pickedLetter);
+      this.disableConfirmBtn();
+      this.enableSpinWheel();
+    } else {
+      showError(`litera ${pickedLetter} została wybrana wczesniej`);
+    }
+    // this.guessLetter()
+  }
+
+  disableSpinWheel() {
+    spinBtn.disabled = true;
+    spinBtn.classList.add("disabled-btn");
+  }
+  enableSpinWheel() {
+    spinBtn.disabled = false;
+    spinBtn.classList.remove("disabled-btn");
+  }
+  disableConfirmBtn() {
+    confirmButton.disabled = true;
+    confirmButton.classList.add("disabled-btn");
+  }
+  enableConfirmBtn() {
+    confirmButton.disabled = false;
+    confirmButton.classList.remove("disabled-btn");
+  }
+  letterFromInputElement() {
+    const inputElement = document.getElementById("singleLetterInput");
+    let inputLetter = inputElement.value.toLowerCase();
+    if (this.letterUsed.includes(inputLetter)) {
+      console.log("do nothing");
+      return false;
+    } else {
+      console.log("dodano litere");
+      this.letterUsed.push(inputLetter);
+      return inputLetter;
+    }
+  }
+}
+
+function showError(message) {
+  const errorDiv = document.getElementById("errorMessage");
+  errorDiv.textContent = message;
+  let timeoutId;
+  clearTimeout(timeoutId);
+  timeoutId = setTimeout(function () {
+    errorDiv.textContent = "";
+  }, 2000);
+}
+
+const player = new Player(5);
+addLife(player.playerLife);
+
+const game = new GameLogic();
 
 // in new game start creating new life ()
 
@@ -283,15 +517,22 @@ Wheel logic
 const wheel = document.getElementById("wheel");
 const spinBtn = document.getElementById("spin-btn");
 const finalValue = document.getElementById("final-value");
+const confirmButton = document.getElementById("confirmBtn");
+
+confirmButton.addEventListener("click", function () {
+  game.activateLetterListener();
+});
+
+// game.disableConfirmBtn();
 
 // how big and how many wheels are and values on wheel
-const valuesWheel = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+const valuesWheel = [10, 50, "bankrut", 500, 50, 100, "tracisz życie", 10];
 
 function createDegreeValues(dataValues) {
   let values = [];
   let minDegree = 0;
   let pieceDegree = 360 / dataValues.length;
-  console.log(pieceDegree);
+  // console.log(pieceDegree);
   for (i = 0; dataValues.length > i; i++) {
     if (i == 0) {
       values.push({
@@ -329,7 +570,7 @@ function reverseLabelValues(dataValues) {
       formatedValues.concat(tempList);
     }
     if (i >= dataValuesDivided) {
-      console.log(dataValues.length - i + dataValuesDivided - 1);
+      // console.log(dataValues.length - i + dataValuesDivided - 1);
       formatedValues.push(
         dataValues[dataValues.length - i + dataValuesDivided - 1]
       );
@@ -347,11 +588,7 @@ function createData(dataValues) {
   return data;
 }
 
-console.log(reverseLabelValues(valuesWheel));
-console.log("test");
 const rotationValuesTest = createDegreeValues(valuesWheel);
-console.log(rotationValuesTest);
-console.log("test");
 
 let rotationValues = createDegreeValues(valuesWheel);
 
@@ -363,6 +600,8 @@ function getLables(data) {
   }
   return labels;
 }
+let dataSetToChart = createData(valuesWheel);
+
 //background color for each piece
 var pieColors = ["#8b35bc", "#006600"];
 //Create chart
@@ -376,7 +615,7 @@ let myChart = new Chart(wheel, {
     datasets: [
       {
         backgroundColor: pieColors,
-        data: createData(valuesWheel),
+        data: dataSetToChart,
       },
     ],
   },
@@ -387,15 +626,23 @@ let myChart = new Chart(wheel, {
     plugins: {
       //hide tooltip and legend
       tooltip: false,
-      legend: {
-        display: false,
-      },
+      legend: false,
       //display labels inside pie chart
+
       datalabels: {
+        // rotation: 60,
         color: "#ffffff",
+        // anchor: "center",
+        align: "center",
+        transform: "45%",
+        rotation: function (ctx) {
+          // return ctx.dataset.data[ctx.dataIndex].d;
+          return rotationValuesTest[ctx.dataIndex].minDegree + 110;
+        },
         formatter: (_, context) => context.chart.data.labels[context.dataIndex],
-        font: { size: 24 },
+        font: { size: 15 },
       },
+      display: "auto",
     },
   },
 });
@@ -406,45 +653,38 @@ const valueGenerator = (angleValue) => {
     //if the angleValue is between min and max then display it
     if (angleValue >= i.minDegree && angleValue <= i.maxDegree) {
       finalValue.innerHTML = `<p>Value: ${i.value}</p>`;
-      spinBtn.disabled = false;
+
+      game.disableSpinWheel();
+      // value from wheel
+      game.spinWheel(i.value);
+      // game.enableConfirmBtn();
       break;
     }
   }
 };
+
 //Spinner count
 let count = 0;
 //100 rotations for animation and last rotation for result
-let resultValue = 101;
+let resultValue = 201;
 //Start spinning
+
 spinBtn.addEventListener("click", () => {
-  spinBtn.disabled = true;
-  //Empty final value
+  game.disableSpinWheel();
+
   finalValue.innerHTML = `<p>Good Luck!</p>`;
-  //Generate random degrees to stop at
   let randomDegree = Math.floor(Math.random() * 360);
-  console.log(randomDegree);
-  // randomDegree = 100;
-  // let randomDegree = Math.floor(Math.random() * (355 - 0 + 1) + 0);
-  //Interval for rotation animation
+
   let rotationInterval = window.setInterval(() => {
-    //Set rotation for piechart
-    /*
-    Initially to make the piechart rotate faster we set resultValue to 101 so it rotates 101 degrees at a time and this reduces by 1 with every count. Eventually on last rotation we rotate by 1 degree at a time.
-    */
     myChart.options.rotation = myChart.options.rotation + resultValue;
-    //Update chart with new value;
     myChart.update();
-    //If rotation>360 reset it back to 0
     if (myChart.options.rotation >= 360) {
-      // console.log(count);
       count += 1;
       resultValue -= 5;
       myChart.options.rotation = 0;
     }
     if (count > 5 && myChart.options.rotation == randomDegree) {
-      console.log("myChart.options.rotation");
-      console.log(myChart.options.rotation);
-
+      // game.enableConfirmBtn();
       valueGenerator(randomDegree);
       clearInterval(rotationInterval);
       count = 0;
