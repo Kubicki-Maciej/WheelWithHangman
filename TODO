@@ -13,4 +13,14 @@ second third = 18
 
 
 
-89 linia służy jako modyfikator wielkości pól gry
+240 linia służy jako modyfikator wielkości pól gry
+
+
+
+240 dodaje
+
+240 funkcja startGame dodaje slowo szukane i z jakiej kategori jest
+
+checkingAllRowsForLetter dodaje litere do szukanych słów
+
+600 linia tworzy pie chart

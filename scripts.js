@@ -1,3 +1,30 @@
+// GAME BUILDING PARAMS
+const valuesWheel = [10, 50, "bankrut", 500, 50, 100, "tracisz życie", 10];
+const pieColors = ["#8b35bc", "#006600"];
+
+// building parms
+let orderWordIndexStart = [1, 1, 0, 0];
+let firstRowLettersField = [];
+let secondRowLettersField = [];
+let thirdRowLettersField = [];
+let fourthRowLettersField = [];
+let hidenFirstRowLetters = [];
+let hidenSecondRowLetters = [];
+let hidenThirdRowLetters = [];
+let hidenFourthRowLetters = [];
+let listOfRowsWord = [
+  Object.keys({ firstRowLettersField })[0],
+  Object.keys({ secondRowLettersField })[0],
+  Object.keys({ thirdRowLettersField })[0],
+  Object.keys({ fourthRowLettersField })[0],
+];
+let wordsPicked = [];
+let lettersUsed = [];
+let letterInCatchword = [];
+let gameObject = {};
+// end building params
+
+// functions adding thing in HTML
 function addInputField(row, number) {
   let inputField = document.createElement("div");
   inputField.className = "field";
@@ -6,7 +33,6 @@ function addInputField(row, number) {
   let container = document.getElementById(`${row}`);
   container.appendChild(inputField);
 }
-
 function addLife(number) {
   for (i = 0; i < number; i++) {
     let hearthField = document.createElement("div");
@@ -17,7 +43,58 @@ function addLife(number) {
     container.appendChild(hearthField);
   }
 }
+// End functions adding thing in HTML
+
+// getters
 let categoryNameElement = document.getElementById("categoryName");
+let wheel = document.getElementById("wheel");
+let spinBtn = document.getElementById("spin-btn");
+let finalValue = document.getElementById("final-value");
+let confirmButton = document.getElementById("confirmBtn");
+let inputElementPlayer = document.getElementById("playerNameInput");
+let btnElementPlayer = document.getElementById("btnPlayerReady");
+
+// listeners
+btnElementPlayer.addEventListener("click", () => {
+  console.log("KLIK");
+  player.addPlayerName();
+  // and close window
+
+  let popupWindow = document.getElementById("popupWindow");
+  popupWindow.classList.add("disablePopup");
+});
+
+spinBtn.addEventListener("click", () => {
+  game.disableSpinWheel();
+
+  finalValue.innerHTML = `<p>Good Luck!</p>`;
+  let randomDegree = Math.floor(Math.random() * 360);
+
+  let rotationInterval = window.setInterval(() => {
+    myChart.options.rotation = myChart.options.rotation + resultValue;
+    myChart.update();
+    if (myChart.options.rotation >= 360) {
+      count += 1;
+      resultValue -= 5;
+      myChart.options.rotation = 0;
+    }
+    if (count > 5 && myChart.options.rotation == randomDegree) {
+      // game.enableConfirmBtn();
+      valueGenerator(randomDegree);
+      clearInterval(rotationInterval);
+      count = 0;
+      resultValue = 101;
+    }
+  }, 10);
+});
+
+confirmButton.addEventListener("click", function () {
+  game.activateLetterListener();
+});
+
+// end listeners
+
+// classes
 class CategoryAndCatchword {
   constructor() {
     this.category = "category";
@@ -57,45 +134,164 @@ class CategoryAndCatchword {
   }
   cleanCategory() {}
 }
+
+class Player {
+  constructor(playerLife) {
+    this.name = "";
+    this.playerLife_static = playerLife;
+    this.playerLife = playerLife;
+    this.points = 0;
+    this.updatePoints();
+  }
+
+  playerRestart() {
+    this.name = "";
+    this.playerLife = this.playerLife_static;
+    this.points = 0;
+  }
+
+  addPlayerName() {
+    this.name = inputElementPlayer.value;
+    let playerNameElement = document.getElementById("userName");
+    playerNameElement.textContent = this.name;
+  }
+  showPlayerName() {}
+
+  playerLoseLife() {
+    let hearthContainer = document.getElementById(`hearth ${this.playerLife}`);
+    hearthContainer.classList.add("lost");
+    this.playerLife -= 1;
+    this.checkIfPlayerALive();
+  }
+  checkIfPlayerALive() {
+    if (this.playerLife <= 0) {
+      console.log("you lose");
+    }
+  }
+  updatePoints() {
+    let points = document.getElementById("points");
+    points.textContent = this.points;
+  }
+  addPoints(points) {
+    this.points += points;
+    this.updatePoints();
+  }
+}
+
+class GameLogic {
+  constructor() {
+    this.points = 0;
+    this.letterUsed = [];
+  }
+
+  spinWheel(result) {
+    console.log(result);
+    /* 
+    1 spinujesz wheelem / blokuje spining wheelem
+    2 sprawdzany jest wynik 
+    3 jezeli jest on pozytywny mozesz wybrac litere
+    4 jezeli litera jest to dostajesz punkty z losowania / jezeli nie ma tracisz zycie 
+    5 jezeli haslo zostalo odgadniete dostajesz 1000 punktow
+    6 odblokowuje spining wheelem
+    */
+    if (Number.isInteger(result)) {
+      console.log(confirmButton.value);
+      this.enableConfirmBtn();
+      // this.activateLetterListener();
+      this.pointWheel(result);
+    } else if (result === "bankrut") {
+      this.losePoints();
+      this.enableSpinWheel();
+    } else if (result === "tracisz życie") {
+      this.loseLife();
+      this.enableSpinWheel();
+    }
+  }
+  pointWheel(points) {
+    this.points = points;
+  }
+  loseLife() {
+    player.playerLoseLife();
+  }
+  guessLetter(letter) {
+    let isLetter = checDkingAllRowsForLetter(letter);
+    if (isLetter) {
+      this.addPointsToPlayer();
+      this.clearTempPoints();
+    } else {
+      this.clearTempPoints();
+      this.loseLife();
+    }
+  }
+  losePoints() {
+    player.points = 0;
+    player.updatePoints();
+  }
+  clearTempPoints() {
+    this.points = 0;
+  }
+  addPointsToPlayer() {
+    player.addPoints(this.points);
+    this.points = 0;
+  }
+
+  activateLetterListener() {
+    console.log("button clicked");
+    let pickedLetter = this.letterFromInputElement();
+    if (pickedLetter) {
+      this.guessLetter(pickedLetter);
+      this.disableConfirmBtn();
+      this.enableSpinWheel();
+    } else {
+      showError(`litera ${pickedLetter} została wybrana wczesniej`);
+    }
+  }
+  disableSpinWheel() {
+    spinBtn.disabled = true;
+    spinBtn.classList.add("disabled-btn");
+  }
+  enableSpinWheel() {
+    spinBtn.disabled = false;
+    spinBtn.classList.remove("disabled-btn");
+  }
+  disableConfirmBtn() {
+    confirmButton.disabled = true;
+    confirmButton.classList.add("disabled-btn");
+  }
+  enableConfirmBtn() {
+    confirmButton.disabled = false;
+    confirmButton.classList.remove("disabled-btn");
+  }
+  letterFromInputElement() {
+    const inputElement = document.getElementById("singleLetterInput");
+    let inputLetter = inputElement.value.toLowerCase();
+    if (this.letterUsed.includes(inputLetter)) {
+      console.log("do nothing");
+      return false;
+    } else {
+      console.log("dodano litere");
+      this.letterUsed.push(inputLetter);
+      return inputLetter;
+    }
+  }
+}
+
+// class constructors
 const categoryAndCatchword = new CategoryAndCatchword();
+const player = new Player(5);
+addLife(player.playerLife);
+const game = new GameLogic();
 
-let orderWordIndexStart = [1, 1, 0, 0];
-
-let firstRowLettersField = [];
-let secondRowLettersField = [];
-let thirdRowLettersField = [];
-let fourthRowLettersField = [];
-
-let hidenFirstRowLetters = [];
-let hidenSecondRowLetters = [];
-let hidenThirdRowLetters = [];
-let hidenFourthRowLetters = [];
-
-let listOfRowsWord = [
-  Object.keys({ firstRowLettersField })[0],
-  Object.keys({ secondRowLettersField })[0],
-  Object.keys({ thirdRowLettersField })[0],
-  Object.keys({ fourthRowLettersField })[0],
-];
-
-let wordsPicked = [];
-
-let lettersUsed = [];
-let letterInCatchword = [];
-
-// adding first and last row of letters
-
-for (i = 0; i < 18; i++) {
+// adding first and last row of letters on html
+for (i = 0; i < 16; i++) {
   addInputField("firstRowLettersField", i + 1);
-  // addInputField("fourthRowLettersField", i + 1);
+  addInputField("fourthRowLettersField", i + 1);
 }
 
 for (i = 0; i < 18; i++) {
   addInputField("secondRowLettersField", i + 1);
   addInputField("thirdRowLettersField", i + 1);
 }
-
-let gameObject = {};
 
 function countLettersInWord(word) {
   return word.split("").length;
@@ -214,6 +410,7 @@ function cleanTable() {
   fourthRowLettersField = [];
 }
 
+/*  OLD FUNCTION*/
 function returnRowName(row) {
   let [rowName] = Object.keys({ row });
 
@@ -228,25 +425,17 @@ function checkingPickedLetter(word, letterPicked) {
       positions.push(i);
     }
   }
+  // testing structure
   if (positions.length > 0) {
-    // console.log(
-    //   `The letter "${letterPicked}" is in the word "${word}" at positions: ${positions.join(
-    //     ", "
-    //   )}.`
-    // );
   } else {
-    // console.log(`The letter "${letterPicked}" is not in the word "${word}".`);
   }
   return positions;
 }
 
 function addLetterOnPositionRow(positions, letter, i, positionWordStart) {
-  // dla jednego slowa i jednej rzedu
-
+  // for all letters in row
   categoryAndCatchword.catchwordCounter += positions.length;
-
   let rowName = listOfRowsWord[i];
-  // console.log(rowName);
 
   for (i = 0; i < positions.length; i++) {
     let container = document.getElementById(
@@ -255,9 +444,6 @@ function addLetterOnPositionRow(positions, letter, i, positionWordStart) {
 
     container.textContent = letter;
   }
-  // console.log("____________________________________");
-  // console.log(categoryAndCatchword.catchwordCounter);
-  // console.log(categoryAndCatchword.lettersInCatchword);
   categoryAndCatchword.checkWordsFull();
 }
 
@@ -273,7 +459,6 @@ function pickedCachwordObject(catchword) {
 }
 
 function checkingAllRowsForLetter(letter) {
-  /* POKAZUJE MI DOBRZE */
   let booleanLetterInWords = false;
 
   for (i = 0; i < gameObject.numberOfWords; i++) {
@@ -301,6 +486,12 @@ function checkingAllRowsForLetter(letter) {
 
 // console.log("list of rows words");
 
+/*
+
+Testing area
+
+*/
+
 startGame("Lubie Placki", "Powiedzenia");
 
 // checkingAllRowsForLetter("l");
@@ -315,169 +506,6 @@ startGame("Lubie Placki", "Powiedzenia");
 // checkingAllRowsForLetter("s");
 // checkingAllRowsForLetter("t");
 
-let inputElementPlayer = document.getElementById("playerNameInput");
-let btnElementPlayer = document.getElementById("btnPlayerReady");
-
-btnElementPlayer.addEventListener("click", () => {
-  console.log("KLIK");
-  player.addPlayerName();
-  // and close window
-
-  let popupWindow = document.getElementById("popupWindow");
-  popupWindow.classList.add("disablePopup");
-});
-
-class Player {
-  constructor(playerLife) {
-    this.name = "";
-    this.playerLife_static = playerLife;
-    this.playerLife = playerLife;
-    this.points = 0;
-    this.updatePoints();
-  }
-
-  playerRestart() {
-    this.name = "";
-    this.playerLife = this.playerLife_static;
-    this.points = 0;
-  }
-
-  addPlayerName() {
-    this.name = inputElementPlayer.value;
-    let playerNameElement = document.getElementById("userName");
-    playerNameElement.textContent = this.name;
-  }
-  showPlayerName() {}
-
-  playerLoseLife() {
-    let hearthContainer = document.getElementById(`hearth ${this.playerLife}`);
-    hearthContainer.classList.add("lost");
-    this.playerLife -= 1;
-    this.checkIfPlayerALive();
-  }
-  checkIfPlayerALive() {
-    if (this.playerLife <= 0) {
-      console.log("you lose");
-    }
-  }
-  updatePoints() {
-    let points = document.getElementById("points");
-    points.textContent = this.points;
-  }
-  addPoints(points) {
-    this.points += points;
-    this.updatePoints();
-  }
-}
-
-class GameLogic {
-  constructor() {
-    this.points = 0;
-    this.letterUsed = [];
-  }
-
-  spinWheel(result) {
-    console.log(result);
-    /* 
-    1 spinujesz wheelem / blokuje spining wheelem
-    2 sprawdzany jest wynik 
-    3 jezeli jest on pozytywny mozesz wybrac litere
-    4 jezeli litera jest to dostajesz punkty z losowania / jezeli nie ma tracisz zycie 
-    5 jezeli haslo zostalo odgadniete dostajesz 1000 punktow
-    6 odblokowuje spining wheelem
-    */
-    if (Number.isInteger(result)) {
-      console.log(confirmButton.value);
-      this.enableConfirmBtn();
-      // this.activateLetterListener();
-      this.pointWheel(result);
-    } else if (result === "bankrut") {
-      this.losePoints();
-      this.enableSpinWheel();
-    } else if (result === "tracisz życie") {
-      this.loseLife();
-      this.enableSpinWheel();
-    }
-  }
-  pointWheel(points) {
-    this.points = points;
-  }
-
-  loseLife() {
-    console.log("_____________________________");
-    console.log(player.playerLife);
-    player.playerLoseLife();
-  }
-  guessLetter(letter) {
-    let isLetter = checkingAllRowsForLetter(letter);
-    if (isLetter) {
-      this.addPointsToPlayer();
-      this.clearTempPoints();
-      // check if is complete
-      // if yes
-      // new game ?
-      // if not
-      // enable spin (new round)
-    } else {
-      this.clearTempPoints();
-      this.loseLife();
-    }
-  }
-  losePoints() {
-    player.points = 0;
-    player.updatePoints();
-  }
-  clearTempPoints() {
-    this.points = 0;
-  }
-  addPointsToPlayer() {
-    player.addPoints(this.points);
-    this.points = 0;
-  }
-
-  activateLetterListener() {
-    console.log("button clicked");
-    let pickedLetter = this.letterFromInputElement();
-    if (pickedLetter) {
-      this.guessLetter(pickedLetter);
-      this.disableConfirmBtn();
-      this.enableSpinWheel();
-    } else {
-      showError(`litera ${pickedLetter} została wybrana wczesniej`);
-    }
-    // this.guessLetter()
-  }
-
-  disableSpinWheel() {
-    spinBtn.disabled = true;
-    spinBtn.classList.add("disabled-btn");
-  }
-  enableSpinWheel() {
-    spinBtn.disabled = false;
-    spinBtn.classList.remove("disabled-btn");
-  }
-  disableConfirmBtn() {
-    confirmButton.disabled = true;
-    confirmButton.classList.add("disabled-btn");
-  }
-  enableConfirmBtn() {
-    confirmButton.disabled = false;
-    confirmButton.classList.remove("disabled-btn");
-  }
-  letterFromInputElement() {
-    const inputElement = document.getElementById("singleLetterInput");
-    let inputLetter = inputElement.value.toLowerCase();
-    if (this.letterUsed.includes(inputLetter)) {
-      console.log("do nothing");
-      return false;
-    } else {
-      console.log("dodano litere");
-      this.letterUsed.push(inputLetter);
-      return inputLetter;
-    }
-  }
-}
-
 function showError(message) {
   const errorDiv = document.getElementById("errorMessage");
   errorDiv.textContent = message;
@@ -488,35 +516,25 @@ function showError(message) {
   }, 2000);
 }
 
-const player = new Player(5);
-addLife(player.playerLife);
-
-const game = new GameLogic();
-
-// in new game start creating new life ()
-
-// function picked
-
-// 1 word => second row || 2 words => second third || 3 words => first second third
-
 /*
 
-Wheel logic
+Wheel 
 
 */
 
-const wheel = document.getElementById("wheel");
-const spinBtn = document.getElementById("spin-btn");
-const finalValue = document.getElementById("final-value");
-const confirmButton = document.getElementById("confirmBtn");
+/*
 
-confirmButton.addEventListener("click", function () {
-  game.activateLetterListener();
-});
+ Wheel Functions 
 
-// how big and how many wheels are and values on wheel
-const valuesWheel = [10, 50, "bankrut", 500, 50, 100, "tracisz życie", 10];
+ */
+function getLables(data) {
+  let labels = [];
 
+  for (i = 0; data.length > i; i++) {
+    labels.push(i + 1);
+  }
+  return labels;
+}
 function createDegreeValues(dataValues) {
   let values = [];
   let minDegree = 0;
@@ -540,7 +558,6 @@ function createDegreeValues(dataValues) {
   }
   return values;
 }
-
 function reverseLabelValues(dataValues) {
   const formatedValues = [];
 
@@ -568,7 +585,6 @@ function reverseLabelValues(dataValues) {
 
   return formatedValues;
 }
-
 function createData(dataValues) {
   const data = [];
   for (i = 0; dataValues.length > i; i++) {
@@ -577,23 +593,8 @@ function createData(dataValues) {
   return data;
 }
 
-const rotationValuesTest = createDegreeValues(valuesWheel);
-
 let rotationValues = createDegreeValues(valuesWheel);
-
-function getLables(data) {
-  let labels = [];
-
-  for (i = 0; data.length > i; i++) {
-    labels.push(i + 1);
-  }
-  return labels;
-}
 let dataSetToChart = createData(valuesWheel);
-
-//background color for each piece
-var pieColors = ["#8b35bc", "#006600"];
-//Create chart
 let myChart = new Chart(wheel, {
   plugins: [ChartDataLabels],
   type: "pie",
@@ -626,7 +627,7 @@ let myChart = new Chart(wheel, {
         transform: "45%",
         rotation: function (ctx) {
           // return ctx.dataset.data[ctx.dataIndex].d;
-          return rotationValuesTest[ctx.dataIndex].minDegree + 110;
+          return rotationValues[ctx.dataIndex].minDegree + 110;
         },
         formatter: (_, context) => context.chart.data.labels[context.dataIndex],
         font: { size: 15 },
@@ -657,27 +658,3 @@ let count = 0;
 //100 rotations for animation and last rotation for result
 let resultValue = 201;
 //Start spinning
-
-spinBtn.addEventListener("click", () => {
-  game.disableSpinWheel();
-
-  finalValue.innerHTML = `<p>Good Luck!</p>`;
-  let randomDegree = Math.floor(Math.random() * 360);
-
-  let rotationInterval = window.setInterval(() => {
-    myChart.options.rotation = myChart.options.rotation + resultValue;
-    myChart.update();
-    if (myChart.options.rotation >= 360) {
-      count += 1;
-      resultValue -= 5;
-      myChart.options.rotation = 0;
-    }
-    if (count > 5 && myChart.options.rotation == randomDegree) {
-      // game.enableConfirmBtn();
-      valueGenerator(randomDegree);
-      clearInterval(rotationInterval);
-      count = 0;
-      resultValue = 101;
-    }
-  }, 10);
-});
