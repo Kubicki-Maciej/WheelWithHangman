@@ -28,7 +28,7 @@ class CategoryAndCatchword {
 
   addCategory(category) {
     this.category = category;
-    console.log(category);
+    // console.log(category);
     this.showCategory();
   }
   addCatchword(catchword) {
@@ -47,15 +47,6 @@ class CategoryAndCatchword {
   }
   checkWordsFull() {
     if (this.catchwordCounter == this.lettersInCatchword) {
-      console.log("zakonczono gre");
-      console.log("zakonczono gre");
-      console.log("zakonczono gre");
-      console.log("zakonczono gre");
-      console.log("zakonczono gre");
-      console.log("zakonczono gre");
-      console.log("zakonczono gre");
-      console.log("zakonczono gre");
-      console.log("zakonczono gre");
       console.log("zakonczono gre");
     }
   }
@@ -94,9 +85,9 @@ let letterInCatchword = [];
 
 // adding first and last row of letters
 
-for (i = 0; i < 16; i++) {
+for (i = 0; i < 18; i++) {
   addInputField("firstRowLettersField", i + 1);
-  addInputField("fourthRowLettersField", i + 1);
+  // addInputField("fourthRowLettersField", i + 1);
 }
 
 for (i = 0; i < 18; i++) {
@@ -264,9 +255,9 @@ function addLetterOnPositionRow(positions, letter, i, positionWordStart) {
 
     container.textContent = letter;
   }
-  console.log("____________________________________");
-  console.log(categoryAndCatchword.catchwordCounter);
-  console.log(categoryAndCatchword.lettersInCatchword);
+  // console.log("____________________________________");
+  // console.log(categoryAndCatchword.catchwordCounter);
+  // console.log(categoryAndCatchword.lettersInCatchword);
   categoryAndCatchword.checkWordsFull();
 }
 
@@ -310,19 +301,19 @@ function checkingAllRowsForLetter(letter) {
 
 // console.log("list of rows words");
 
-startGame("Lubie Placki i Ciastka", "Powiedzenia");
+startGame("Lubie Placki", "Powiedzenia");
 
-checkingAllRowsForLetter("l");
-checkingAllRowsForLetter("u");
-checkingAllRowsForLetter("b");
-checkingAllRowsForLetter("i");
-checkingAllRowsForLetter("e");
-checkingAllRowsForLetter("p");
-checkingAllRowsForLetter("a");
-checkingAllRowsForLetter("c");
-checkingAllRowsForLetter("k");
-checkingAllRowsForLetter("s");
-checkingAllRowsForLetter("t");
+// checkingAllRowsForLetter("l");
+// checkingAllRowsForLetter("u");
+// checkingAllRowsForLetter("b");
+// checkingAllRowsForLetter("i");
+// checkingAllRowsForLetter("e");
+// checkingAllRowsForLetter("p");
+// checkingAllRowsForLetter("a");
+// checkingAllRowsForLetter("c");
+// checkingAllRowsForLetter("k");
+// checkingAllRowsForLetter("s");
+// checkingAllRowsForLetter("t");
 
 let inputElementPlayer = document.getElementById("playerNameInput");
 let btnElementPlayer = document.getElementById("btnPlayerReady");
@@ -522,8 +513,6 @@ const confirmButton = document.getElementById("confirmBtn");
 confirmButton.addEventListener("click", function () {
   game.activateLetterListener();
 });
-
-// game.disableConfirmBtn();
 
 // how big and how many wheels are and values on wheel
 const valuesWheel = [10, 50, "bankrut", 500, 50, 100, "tracisz życie", 10];
