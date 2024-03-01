@@ -2,6 +2,8 @@
 const valuesWheel = [10, 50, "bankrut", 500, 50, 100, "tracisz życie", 10];
 const pieColors = ["#8b35bc", "#006600"];
 
+let numbersOfBlocksFields = 24;
+
 // building parms
 let orderWordIndexStart = [1, 1, 0, 0];
 let firstRowLettersField = [];
@@ -53,6 +55,7 @@ let finalValue = document.getElementById("final-value");
 let confirmButton = document.getElementById("confirmBtn");
 let inputElementPlayer = document.getElementById("playerNameInput");
 let btnElementPlayer = document.getElementById("btnPlayerReady");
+let myButtons = document.getElementById("alphabetButtons");
 
 // listeners
 btnElementPlayer.addEventListener("click", () => {
@@ -214,7 +217,7 @@ class GameLogic {
     player.playerLoseLife();
   }
   guessLetter(letter) {
-    let isLetter = checDkingAllRowsForLetter(letter);
+    let isLetter = checkingAllRowsForLetter(letter);
     if (isLetter) {
       this.addPointsToPlayer();
       this.clearTempPoints();
@@ -235,15 +238,14 @@ class GameLogic {
     this.points = 0;
   }
 
-  activateLetterListener() {
-    console.log("button clicked");
-    let pickedLetter = this.letterFromInputElement();
+  activateLetterListener(letter) {
+    let pickedLetter = this.letterFromInputElement(letter);
     if (pickedLetter) {
       this.guessLetter(pickedLetter);
       this.disableConfirmBtn();
       this.enableSpinWheel();
     } else {
-      showError(`litera ${pickedLetter} została wybrana wczesniej`);
+      // showError(`litera ${pickedLetter} została wybrana wczesniej`);
     }
   }
   disableSpinWheel() {
@@ -262,9 +264,8 @@ class GameLogic {
     confirmButton.disabled = false;
     confirmButton.classList.remove("disabled-btn");
   }
-  letterFromInputElement() {
-    const inputElement = document.getElementById("singleLetterInput");
-    let inputLetter = inputElement.value.toLowerCase();
+  letterFromInputElement(letter) {
+    let inputLetter = letter.toLowerCase();
     if (this.letterUsed.includes(inputLetter)) {
       console.log("do nothing");
       return false;
@@ -276,19 +277,107 @@ class GameLogic {
   }
 }
 
+class AlphabetButtons {
+  constructor() {
+    this.alphabet = [
+      "a",
+      "ą",
+      "b",
+      "c",
+      "ć",
+      "d",
+      "e",
+      "ę",
+      "f",
+      "g",
+      "h",
+      "i",
+      "j",
+      "k",
+      "l",
+      "ł",
+      "m",
+      "n",
+      "o",
+      "ó",
+      "p",
+      "q",
+      "r",
+      "s",
+      "ś",
+      "t",
+      "u",
+      "v",
+      "w",
+      "x",
+      "y",
+      "z",
+      "ź",
+      "ż",
+    ];
+    this.alphabetObjectsButton = [];
+
+    this.createAlphabetOnPage();
+    this.addListenerForAllAlphabet();
+  }
+  createButton() {
+    button = document.createElement("button");
+    button.className = "testTEST";
+  }
+
+  createAlphabetOnPage() {
+    let letters = document.createElement("ul");
+    for (i = 0; i < this.alphabet.length; i++) {
+      letters.id = "alphabet";
+      let button = document.createElement("button");
+      button.className = `letter${this.alphabet[i]}`;
+      button.id = `${this.alphabet[i]}`;
+      button.innerHTML = this.alphabet[i];
+      this.alphabetObjectsButton.push(button);
+      // checkButton();
+      myButtons.appendChild(letters);
+      letters.appendChild(button);
+    }
+  }
+
+  addListenerForAllAlphabet() {
+    const wrapper = document.getElementById("alphabetButtons");
+    wrapper.addEventListener("click", (event) => {
+      const isButton = event.target.nodeName === "BUTTON";
+      if (!isButton) {
+        return;
+      } else {
+        console.log(event.target.id);
+        game.activateLetterListener(event.target.id);
+      }
+    });
+  }
+  disableButtons() {
+    for (i = 0; i < this.alphabetObjectsButton.length; i++) {
+      this.alphabetObjectsButton[i].disabled = true;
+    }
+  }
+  enableButtons() {
+    for (i = 0; i < this.alphabetObjectsButton.length; i++) {
+      this.alphabetObjectsButton[i].disabled = false;
+    }
+  }
+}
+
 // class constructors
 const categoryAndCatchword = new CategoryAndCatchword();
 const player = new Player(5);
 addLife(player.playerLife);
 const game = new GameLogic();
+const alphabetButtons = new AlphabetButtons();
 
 // adding first and last row of letters on html
-for (i = 0; i < 16; i++) {
+for (i = 0; i < numbersOfBlocksFields; i++) {
   addInputField("firstRowLettersField", i + 1);
-  addInputField("fourthRowLettersField", i + 1);
+  // addInputField("fourthRowLettersField", i + 1);
 }
 
-for (i = 0; i < 18; i++) {
+for (i = 0; i < numbersOfBlocksFields; i++) {
   addInputField("secondRowLettersField", i + 1);
   addInputField("thirdRowLettersField", i + 1);
 }
@@ -378,9 +467,9 @@ function positionIndexStartLetter(word, i) {
 
 function retunrRowNumber(i) {
   if (i == 0 || i == 3) {
-    return 16;
+    return numbersOfBlocksFields;
   } else if (i == 1 || i == 2) {
-    return 18;
+    return numbersOfBlocksFields;
   }
 }
 
@@ -595,6 +684,7 @@ function createData(dataValues) {
 
 let rotationValues = createDegreeValues(valuesWheel);
 let dataSetToChart = createData(valuesWheel);
+
 let myChart = new Chart(wheel, {
   plugins: [ChartDataLabels],
   type: "pie",
@@ -636,6 +726,7 @@ let myChart = new Chart(wheel, {
     },
   },
 });
+
 //display value based on the randomAngle
 const valueGenerator = (angleValue) => {
   console.log(angleValue);
@@ -657,4 +748,3 @@ const valueGenerator = (angleValue) => {
 let count = 0;
 //100 rotations for animation and last rotation for result
 let resultValue = 201;
-//Start spinning
