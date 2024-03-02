@@ -1,8 +1,42 @@
 // GAME BUILDING PARAMS
 const valuesWheel = [10, 50, "bankrut", 500, 50, 100, "tracisz życie", 10];
 const pieColors = ["#8b35bc", "#006600"];
+const life = 5;
 
-let numbersOfBlocksFields = 24;
+const catchWordDict = {
+  kompozytorzy: [
+    "GEATANO DONIZETTI",
+    "GIOACCHINO ROSSINI",
+    "GIUSEPPE VERDI",
+    "IGNACY JAN PADEREWSKI",
+    "KRZYSZTOF PENDERECKI",
+    "STANISŁAW MONIUSZKO",
+    "WOLFGANG AMADEUSZ MOZART",
+  ],
+  powiedzenia: ["MUZYKA ŁAGODZI OBYCZAJE"],
+  tytuły: [
+    "MADAMA BUTTERFLY",
+    "DZIADEK DO ORZECHÓW",
+    "ZEMSTA NIETOPERZA",
+    "NOC W WENECJI",
+    "TURANDOT",
+    "BAJADERA",
+    "GREK ZORBA",
+    "MY FAIR LADY",
+    "CINDERELLA",
+  ],
+  muzyczne_pojęcia: [
+    "PROSCENIUM",
+    "ORKIESTRON",
+    "MEZZOSOPRAN",
+    "PARTYTURA",
+    "BATUTA",
+    "SOPRAN",
+    "TENOR",
+    "BARYTON",
+  ],
+};
+const numbersOfBlocksFields = 24;
 
 // building parms
 let orderWordIndexStart = [1, 1, 0, 0];
@@ -56,17 +90,50 @@ let confirmButton = document.getElementById("confirmBtn");
 let inputElementPlayer = document.getElementById("playerNameInput");
 let btnElementPlayer = document.getElementById("btnPlayerReady");
 let myButtons = document.getElementById("alphabetButtons");
+let winWindow = document.getElementById("winWindow");
+let loseWindow = document.getElementById("loseWindow");
+let btnNextRound = document.getElementById("nextRound");
+let btnCancelGame = document.getElementById("cancelGame");
+let btnCancelLoseGame = document.getElementById("cancelLoseGame");
+let btnplayAgain = document.getElementById("playAgain");
+let popupWindow = document.getElementById("popupWindow");
 
 // listeners
 btnElementPlayer.addEventListener("click", () => {
-  console.log("KLIK");
+  console.log("PLAYER READY ,GAME STARTED");
   player.addPlayerName();
-  // and close window
 
-  let popupWindow = document.getElementById("popupWindow");
+  //start game and close window
+  startGame("ppppp", "Powiedzenia");
+
   popupWindow.classList.add("disablePopup");
 });
-
+btnNextRound.addEventListener("click", () => {
+  console.log("nastepna runda");
+  game.resetGameFields();
+  game.nextCatchword();
+  game.removeWinWindow();
+});
+btnCancelGame.addEventListener("click", () => {
+  game.resetGameFields();
+  inputElementPlayer.value = "";
+  game.restartGame();
+  game.removeWinWindow();
+  popupWindow.classList.remove("disablePopup");
+});
+btnCancelLoseGame.addEventListener("click", () => {
+  game.resetGameFields();
+  inputElementPlayer.value = "";
+  game.restartGame();
+  popupWindow.classList.remove("disablePopup");
+});
+btnplayAgain.addEventListener("click", () => {
+  game.resetGameFields();
+  player.resetGame();
+  game.nextCatchword();
+  game.removeWinWindow();
+  // game.removeLostWindow();
+});
 spinBtn.addEventListener("click", () => {
   game.disableSpinWheel();
 
@@ -82,7 +149,6 @@ spinBtn.addEventListener("click", () => {
       myChart.options.rotation = 0;
     }
     if (count > 5 && myChart.options.rotation == randomDegree) {
-      // game.enableConfirmBtn();
       valueGenerator(randomDegree);
       clearInterval(rotationInterval);
       count = 0;
@@ -91,10 +157,11 @@ spinBtn.addEventListener("click", () => {
   }, 10);
 });
 
+/* not used
 confirmButton.addEventListener("click", function () {
   game.activateLetterListener();
 });
-
+*/
 // end listeners
 
 // classes
@@ -127,7 +194,7 @@ class CategoryAndCatchword {
   }
   checkWordsFull() {
     if (this.catchwordCounter == this.lettersInCatchword) {
-      console.log("zakonczono gre");
+      game.gameWon();
     }
   }
   cleanCatchword() {
@@ -151,6 +218,13 @@ class Player {
     this.name = "";
     this.playerLife = this.playerLife_static;
     this.points = 0;
+    this.playerRestartLife();
+  }
+
+  resetGame() {
+    this.points = 0;
+    this.playerLife = this.playerLife_static;
+    this.playerRestartLife();
   }
 
   addPlayerName() {
@@ -169,6 +243,7 @@ class Player {
   checkIfPlayerALive() {
     if (this.playerLife <= 0) {
       console.log("you lose");
+      game.gameLost();
     }
   }
   updatePoints() {
@@ -179,12 +254,27 @@ class Player {
     this.points += points;
     this.updatePoints();
   }
+  playerRestartLife() {
+    Array.from(document.querySelectorAll(".hearth")).forEach((element) => {
+      element.classList.remove("lost");
+    });
+  }
 }
 
 class GameLogic {
   constructor() {
     this.points = 0;
     this.letterUsed = [];
+  }
+
+  resetGameFields() {
+    this.letterUsed = [];
+    categoryAndCatchword.cleanCatchword();
+    Array.from(document.querySelectorAll(".field")).forEach((element) => {
+      console.log(element.textContent);
+      element.classList.remove("open");
+      element.textContent = "";
+    });
   }
 
   spinWheel(result) {
@@ -198,7 +288,7 @@ class GameLogic {
     6 odblokowuje spining wheelem
     */
     if (Number.isInteger(result)) {
-      console.log(confirmButton.value);
+      // console.log(confirmButton.value);
       this.enableConfirmBtn();
       // this.activateLetterListener();
       this.pointWheel(result);
@@ -257,12 +347,10 @@ class GameLogic {
     spinBtn.classList.remove("disabled-btn");
   }
   disableConfirmBtn() {
-    confirmButton.disabled = true;
-    confirmButton.classList.add("disabled-btn");
+    alphabetButtons.disableButtons();
   }
   enableConfirmBtn() {
-    confirmButton.disabled = false;
-    confirmButton.classList.remove("disabled-btn");
+    alphabetButtons.enableButtons();
   }
   letterFromInputElement(letter) {
     let inputLetter = letter.toLowerCase();
@@ -274,6 +362,44 @@ class GameLogic {
       this.letterUsed.push(inputLetter);
       return inputLetter;
     }
+  }
+
+  gameLost() {
+    // timer ?
+    loseWindow.classList.remove("disablePopup");
+    /* 
+      wyskakuje okno z zdobytymi punktami 
+      i z zacznij nowa gre
+    */
+  }
+
+  removeWinWindow() {
+    winWindow.classList.add("disablePopup");
+  }
+
+  removeLostWindow() {
+    loseWindow.classList.add("disablePopup");
+  }
+
+  gameWon() {
+    player.addPoints(1000);
+    winWindow.classList.remove("disablePopup");
+
+    // okno czy grasz dalej
+    // z punktami nawa gracza i wyborem
+    // tak
+    // losujesz nowe hasło
+    // resetujesz plansze
+    // nie
+    // resetujesz plansze gracza
+    // dajesz ekran koncowy
+  }
+  restartGame() {
+    player.playerRestart();
+  }
+  nextCatchword() {
+    // aka next round
+    startGame("lll", "zwierzęta");
   }
 }
 
@@ -319,6 +445,7 @@ class AlphabetButtons {
 
     this.createAlphabetOnPage();
     this.addListenerForAllAlphabet();
+    this.disableButtons();
   }
   createButton() {
     button = document.createElement("button");
@@ -330,7 +457,8 @@ class AlphabetButtons {
     for (i = 0; i < this.alphabet.length; i++) {
       letters.id = "alphabet";
       let button = document.createElement("button");
-      button.className = `letter${this.alphabet[i]}`;
+      button.className = `letter shadowElement`;
+      // button.className.classList("shadowElement");
       button.id = `${this.alphabet[i]}`;
       button.innerHTML = this.alphabet[i];
       this.alphabetObjectsButton.push(button);
@@ -364,9 +492,52 @@ class AlphabetButtons {
   }
 }
 
+class CatchWordGenerator {
+  constructor(listOfCatchwordsWithCategory) {
+    this.catchWordObject = listOfCatchwordsWithCategory;
+    this.catchwordList = [];
+    this.categoryList = [];
+    this.lengthItemInCategorys = [];
+    this.allCatchWords = 0;
+    this.categoryList();
+    this.lengthOfAllItemsInCategorys();
+  }
+  createCategoryList() {
+    this.categoryList = Object.keys(this.catchWordObject);
+  }
+  lengthOfAllItemsInCategorys() {
+    let tempValue = 0;
+    for (i = 0; i < this.categoryList.length; i++) {
+      tempValue += this.catchWordObject[this.categoryList[i]].length;
+      this.lengthItemInCategorys.push(tempValue);
+    }
+    this.allCatchWords = tempValue;
+  }
+  get_N_ItemFrom(n) {
+    let tempValue = 0;
+    for (i = 0; i < this.lengthItemInCategorys.length; i++) {
+      tempValue += this.lengthItemInCategorys[i];
+      if (n <= tempValue) {
+        return i, this.allCatchWords - tempValue;
+      }
+    }
+  }
+  returnRandomCatchWordAndCategory() {
+    let randomNumber = Math.floor(Math.random() * this.allCatchWords);
+    let pickedCatchwordIndexAndCategoryIndex =
+      this.get_N_ItemFrom(randomNumber);
+    let category = this.categoryList[pickedCatchwordIndexAndCategoryIndex[0]];
+    let catchword =
+      this.catchWordObject[category][
+        pickedCatchwordIndexAndCategoryIndex[1] - 1
+      ];
+    return catchword, category;
+  }
+}
+
 // class constructors
 const categoryAndCatchword = new CategoryAndCatchword();
-const player = new Player(5);
+const player = new Player(life);
 addLife(player.playerLife);
 const game = new GameLogic();
 const alphabetButtons = new AlphabetButtons();
@@ -581,8 +752,6 @@ Testing area
 
 */
 
-startGame("Lubie Placki", "Powiedzenia");
-
 // checkingAllRowsForLetter("l");
 // checkingAllRowsForLetter("u");
 // checkingAllRowsForLetter("b");
@@ -591,9 +760,8 @@ startGame("Lubie Placki", "Powiedzenia");
 // checkingAllRowsForLetter("p");
 // checkingAllRowsForLetter("a");
 // checkingAllRowsForLetter("c");
-// checkingAllRowsForLetter("k");
+// checkingAllRowsForLetter("");
 // checkingAllRowsForLetter("s");
-// checkingAllRowsForLetter("t");
 
 function showError(message) {
   const errorDiv = document.getElementById("errorMessage");
@@ -615,7 +783,8 @@ Wheel
 
  Wheel Functions 
 
- */
+*/
+
 function getLables(data) {
   let labels = [];
 
@@ -730,6 +899,8 @@ let myChart = new Chart(wheel, {
 //display value based on the randomAngle
 const valueGenerator = (angleValue) => {
   console.log(angleValue);
+
+  // rotationValues = 275;
   for (let i of rotationValues) {
     //if the angleValue is between min and max then display it
     if (angleValue >= i.minDegree && angleValue <= i.maxDegree) {
@@ -738,7 +909,6 @@ const valueGenerator = (angleValue) => {
       game.disableSpinWheel();
       // value from wheel
       game.spinWheel(i.value);
-      // game.enableConfirmBtn();
       break;
     }
   }
@@ -747,4 +917,4 @@ const valueGenerator = (angleValue) => {
 //Spinner count
 let count = 0;
 //100 rotations for animation and last rotation for result
-let resultValue = 201;
+let resultValue = 101;

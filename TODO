@@ -1,33 +1,31 @@
-1. Create Letters
-- 4 row of letters
-first last = 16
-second third = 18
-- Letters can be Open/Closed Picked
-
-
-2. Create HangMan Logic
-
-3. Create Player logic
-
-4. Reset Status
-
-
-
-240 linia służy jako modyfikator wielkości pól gry
-
-
-
-240 dodaje
-
 240 funkcja startGame dodaje slowo szukane i z jakiej kategori jest
 
 checkingAllRowsForLetter dodaje litere do szukanych słów
 
 600 linia tworzy pie chart
 
+Bugs 
+Bug z wartosciami na kole nie wyswietla ich poprawnie
+nie kasuje i nie rysuje nowej planszy 
+bug z iloscia zycia przy zmianie gracza i pewnie resecie gry DONE
+
 
 TO DO
-Lista liter 
-Caly ekran dla gracza
-wygrana przegrana gra
+Lista liter  DONE
+Caly ekran dla gracza DONE
+wygrana przegrana gra DONE
+
+
+
+next day 
+Dobrze działające koło
+gra renderowana w jednej lini
 Haslo w jednej lini
+wyglad
+generator hasel z listy
+
+wongame 127 linia
+
+759 angle value ustawione na utrate zycia
+
+69 linia losowanie hasla kategoria i startowanie gry

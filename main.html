@@ -7,6 +7,19 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <div class="popupWindow disablePopup" id="winWindow">
+      <p>Wygrales czy grasz dalej ?</p>
+      <button id="nextRound">Tak</button>
+      <button id="cancelGame">Nie</button>
+    </div>
+    <div class="popupWindow disablePopup" id="loseWindow">
+      <p>
+        Przegrales Czy chcesz zagrać jeszcze raz ? if nie to przelacz okno
+        popupWindow
+      </p>
+      <button id="playAgain">Tak</button>
+      <button id="cancelLoseGame">Nie</button>
+    </div>
     <div class="popupWindow" id="popupWindow">
       <!-- <button class="closePopup" id="closePopup">x</button> -->
       <div class="popupContainer">
@@ -42,10 +55,10 @@
       <div class="inputContainer">
         <div class="alphabetButtons" id="alphabetButtons"></div>
 
-        <input type="text" id="singleLetterInput" maxlength="1" />
-        <button disabled class="confirmBtn disabled-btn" id="confirmBtn">
+        <!-- <input type="text" id="singleLetterInput" maxlength="1" /> -->
+        <!-- <button disabled class="confirmBtn disabled-btn" id="confirmBtn">
           Sprawdź Litere
-        </button>
+        </button> -->
         <div class="errorMessage" id="errorMessage"></div>
       </div>
       <div class="wheelContainer">

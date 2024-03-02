@@ -125,9 +125,15 @@ navBar
   text-align: right;
 }
 
-/* wheel style*/
+/* 
+
+wheel style
+
+*/
 .wheelContainer {
+  display: flex;
   height: 100%;
+  justify-content: center;
 }
 
 * {
@@ -137,20 +143,24 @@ navBar
   font-family: "Poppins", sans-serif;
 }
 body {
-  height: 100vh;
+  height: 100%;
   background: whitesmoke;
 }
 .wrapper {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
   width: 90%;
   max-width: 34.37em;
   max-height: 65vh;
-  background-color: whitesmoke;
+  background: rgba(0, 0, 0, 0);
   justify-content: center;
-  position: absolute;
-  transform: translate(-50%, -50%);
-  top: 65%;
-  left: 50%;
-  padding: 3em;
+  /* position: absolute; */
+  /* transform: translate(-50%, -50%); */
+  /* top: 65%; */
+  /* left: 50%; */
+  /* margin: 3em; */
+  padding: 2em;
   border-radius: 1em;
   /* box-shadow: 0 4em 5em rgba(27, 8, 53, 0.2); */
 }
@@ -218,7 +228,9 @@ img {
 }
 
 /*
+
  popUp section
+
 */
 
 .popupWindow {
@@ -226,11 +238,11 @@ img {
   z-index: 100;
   position: absolute;
   transform: translate(-50%, -50%);
-  top: 60%;
+  top: 50%;
   left: 50%;
-  height: 300px;
-  width: 400px;
-  background-color: blanchedalmond;
+  height: 100%;
+  width: 100%;
+  background-color: whitesmoke;
 }
 .popupContainer {
   height: 100%;
@@ -250,4 +262,14 @@ img {
 
 .disablePopup {
   display: none;
+}
+
+/* 
+  All purpose class
+*/
+
+.shadowElement {
+  -webkit-box-shadow: 8px 8px 24px -5px rgba(66, 68, 90, 1);
+  -moz-box-shadow: 8px 8px 24px -5px rgba(66, 68, 90, 1);
+  box-shadow: 8px 8px 24px -5px rgba(66, 68, 90, 1);
 }
