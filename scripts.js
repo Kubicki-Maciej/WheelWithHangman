@@ -608,7 +608,9 @@ function putAllWords(listCatchword) {
       // console.log(element);
       putEmptyWord(element, indexListOfRowsWord, index);
     };
-    listCatchword.forEach(wordsArrayElements);
+
+    // listCatchword.forEach(wordsArrayElements);
+
     // for (i = 0; i <= listCatchword.length; i++) {
     //   let positionOnTable = orderWordIndexStart[listCatchword.length - 1];
     //   let indexListOfRowsWord = positionOnTable + i;
