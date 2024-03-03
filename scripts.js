@@ -103,7 +103,7 @@ btnElementPlayer.addEventListener("click", () => {
   player.addPlayerName();
 
   //start game and close window
-  startGame("ppppp llllll", "Powiedzenia");
+  startGame("pplpp llppll", "Powiedzenia");
 
   popupWindow.classList.add("disablePopup");
 });
