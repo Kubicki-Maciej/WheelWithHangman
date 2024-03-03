@@ -36,7 +36,7 @@ const catchWordDict = {
     "BARYTON",
   ],
 };
-const numbersOfBlocksFields = 24;
+const numbersOfBlocksFields = 26;
 
 // building parms
 let orderWordIndexStart = [1, 1, 0];
@@ -103,7 +103,7 @@ btnElementPlayer.addEventListener("click", () => {
   player.addPlayerName();
 
   //start game and close window
-  startGame("ppppp", "Powiedzenia");
+  startGame("ppppp llllll", "Powiedzenia");
 
   popupWindow.classList.add("disablePopup");
 });
@@ -582,7 +582,7 @@ function startGame(Catchwords, Category) {
   categoryAndCatchword.countsLettersInCatchWord();
   gameObject = pickedCachwordObject(Catchwords);
 
-  putAllWords(gameObject.listOfWords);
+  putAllWords(gameObject.catchword);
 }
 
 function lowerAllWordsInList(listWords) {
@@ -597,28 +597,21 @@ function lowerAllWordsInList(listWords) {
 function putAllWords(listCatchword) {
   // dodaje slowa do tabel
 
-  if (listOfRowsWord.length > 5) {
-    // losowanie nowego hasla
-  } else {
-    // console.log(listCatchword);
-    const wordsArrayElements = (element, index /*, array */) => {
-      let positionOnTable = orderWordIndexStart[listCatchword.length - 1];
-      let indexListOfRowsWord = positionOnTable + index;
-      // console.log(indexListOfRowsWord);
-      // console.log(element);
-      putEmptyWord(element, indexListOfRowsWord, index);
-    };
+  // console.log(listCatchword);
 
-    // listCatchword.forEach(wordsArrayElements);
+  let positionOnTable = orderWordIndexStart[1]; // this determinate row
+  let indexListOfRowsWord = positionOnTable;
+  // console.log(indexListOfRowsWord);
+  // console.log(element);
+  putEmptyWord(listCatchword, indexListOfRowsWord, 1);
 
-    // for (i = 0; i <= listCatchword.length; i++) {
-    //   let positionOnTable = orderWordIndexStart[listCatchword.length - 1];
-    //   let indexListOfRowsWord = positionOnTable + i;
-    //   console.log(indexListOfRowsWord);
-    //   console.log(listCatchword[i]);
-    //   putEmptyWord(listCatchword[i], indexListOfRowsWord);
-    // }
-  }
+  // for (i = 0; i <= listCatchword.length; i++) {
+  //   let positionOnTable = orderWordIndexStart[listCatchword.length - 1];
+  //   let indexListOfRowsWord = positionOnTable + i;
+  //   console.log(indexListOfRowsWord);
+  //   console.log(listCatchword[i]);
+  //   putEmptyWord(listCatchword[i], indexListOfRowsWord);
+  // }
 }
 
 function putEmptyWord(catchword, indexStart, index) {
@@ -629,9 +622,14 @@ function putEmptyWord(catchword, indexStart, index) {
   // it's for one word
   let lettersCount = countLettersInWord(catchword);
   let positionNumberStart = positionIndexStartLetter(catchword, index);
-
+  let splitedCatchword = catchword.split("");
   //   adding word to second table
-  revealFields(listOfRowsWord[indexStart], lettersCount, positionNumberStart);
+  revealFields(
+    listOfRowsWord[indexStart],
+    lettersCount,
+    positionNumberStart,
+    splitedCatchword
+  );
   addToTableWord(
     secondRowLettersField,
     retunrRowNumber(index),
@@ -641,12 +639,21 @@ function putEmptyWord(catchword, indexStart, index) {
   );
 }
 
-function revealFields(fieldRow, lettersCount, positionNumberStart) {
+function revealFields(
+  fieldRow,
+  lettersCount,
+  positionNumberStart,
+  splitedcatchword
+) {
+  console.log(splitedcatchword);
   for (j = 0; j < lettersCount; j++) {
-    let elementField = document.getElementById(
-      `${positionNumberStart + j + 1}_${fieldRow}`
-    );
-    elementField.className = "field open";
+    if (splitedcatchword[j] == " ") {
+    } else {
+      let elementField = document.getElementById(
+        `${positionNumberStart + j + 1}_${fieldRow}`
+      );
+      elementField.className = "field open";
+    }
   }
 }
 
@@ -731,6 +738,7 @@ function addLetterOnPositionRow(positions, letter, i, positionWordStart) {
 function pickedCachwordObject(catchword) {
   let splitedCatchword = catchword.split(" ");
   let catchwordObject = {
+    catchword: catchword,
     listOfWords: lowerAllWordsInList(splitedCatchword),
     numberOfWords: splitedCatchword.length,
   };
@@ -742,24 +750,19 @@ function pickedCachwordObject(catchword) {
 function checkingAllRowsForLetter(letter) {
   let booleanLetterInWords = false;
 
-  for (i = 0; i < gameObject.numberOfWords; i++) {
-    // add logic if word in row
-    let positionPickedLetter = checkingPickedLetter(
-      gameObject.listOfWords[i],
-      letter
+  // add logic if word in row
+  let positionPickedLetter = checkingPickedLetter(gameObject.catchword, letter);
+  if (positionPickedLetter.length) {
+    booleanLetterInWords = true;
+    addLetterOnPositionRow(
+      positionPickedLetter,
+      letter,
+      orderWordIndexStart[gameObject.numberOfWords - 1] + 0,
+      positionIndexStartLetter(gameObject.catchword, 0)
     );
-    if (positionPickedLetter.length) {
-      booleanLetterInWords = true;
-      addLetterOnPositionRow(
-        positionPickedLetter,
-        letter,
-        orderWordIndexStart[gameObject.numberOfWords - 1] + i,
-        positionIndexStartLetter(gameObject.listOfWords[i], i)
-      );
-    } else {
-      // tracisz zycie
-      // console.log("No letter in word");
-    }
+  } else {
+    // tracisz zycie
+    // console.log("No letter in word");
   }
 
   return booleanLetterInWords;
