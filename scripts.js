@@ -1,5 +1,5 @@
 // GAME BUILDING PARAMS
-const valuesWheel = [10, 50, "bankrut", 500, 50, 100, "tracisz życie", 10];
+const valuesWheel = [1, 50, "bankrut", 500, 25, 100, "tracisz życie", 5];
 const pieColors = ["#8b35bc", "#006600"];
 const life = 5;
 
@@ -39,7 +39,7 @@ const catchWordDict = {
 const numbersOfBlocksFields = 24;
 
 // building parms
-let orderWordIndexStart = [1, 1, 0, 0];
+let orderWordIndexStart = [1, 1, 0];
 let firstRowLettersField = [];
 let secondRowLettersField = [];
 let thirdRowLettersField = [];
@@ -52,7 +52,6 @@ let listOfRowsWord = [
   Object.keys({ firstRowLettersField })[0],
   Object.keys({ secondRowLettersField })[0],
   Object.keys({ thirdRowLettersField })[0],
-  Object.keys({ fourthRowLettersField })[0],
 ];
 let wordsPicked = [];
 let lettersUsed = [];
@@ -127,6 +126,7 @@ btnCancelLoseGame.addEventListener("click", () => {
   game.restartGame();
   popupWindow.classList.remove("disablePopup");
 });
+// spin LOGIC
 btnplayAgain.addEventListener("click", () => {
   game.resetGameFields();
   player.resetGame();
@@ -165,6 +165,24 @@ confirmButton.addEventListener("click", function () {
 // end listeners
 
 // classes
+class RotationHelper {
+  constructor() {
+    this.listOfValues = [];
+    this.lengthList = 0;
+    this.degree = 0;
+    this.addValues(valuesWheel);
+  }
+  addValues(listOfRotationValues) {
+    this.listOfValues = listOfRotationValues;
+    this.lengthList = this.listOfValues.length;
+    this.calculateDegree();
+  }
+  calculateDegree() {
+    // liczba itemow dzielona przez 360
+    this.degree = Math.round(360 / this.lengthList / 2);
+  }
+}
+
 class CategoryAndCatchword {
   constructor() {
     this.category = "category";
@@ -541,6 +559,7 @@ const player = new Player(life);
 addLife(player.playerLife);
 const game = new GameLogic();
 const alphabetButtons = new AlphabetButtons();
+const circleRotationHelper = new RotationHelper();
 
 // adding first and last row of letters on html
 for (i = 0; i < numbersOfBlocksFields; i++) {
@@ -762,6 +781,12 @@ Testing area
 // checkingAllRowsForLetter("c");
 // checkingAllRowsForLetter("");
 // checkingAllRowsForLetter("s");
+function checkIfValueIsGreaterThenFullCircle(value) {
+  if (value + 90 > 360) {
+    return value + 90 - 360;
+  }
+  return value + 90;
+}
 
 function showError(message) {
   const errorDiv = document.getElementById("errorMessage");
@@ -852,6 +877,8 @@ function createData(dataValues) {
 }
 
 let rotationValues = createDegreeValues(valuesWheel);
+
+console.log(rotationValues);
 let dataSetToChart = createData(valuesWheel);
 
 let myChart = new Chart(wheel, {
@@ -873,20 +900,30 @@ let myChart = new Chart(wheel, {
     responsive: true,
     animation: { duration: 0 },
     plugins: {
-      //hide tooltip and legend
       tooltip: false,
       legend: false,
-      //display labels inside pie chart
-
       datalabels: {
         // rotation: 60,
         color: "#ffffff",
-        // anchor: "center",
         align: "center",
         transform: "45%",
+        // rotation: "45",
+
         rotation: function (ctx) {
-          // return ctx.dataset.data[ctx.dataIndex].d;
-          return rotationValues[ctx.dataIndex].minDegree + 110;
+          return (
+            rotationValues[ctx.dataIndex].minDegree +
+            ctx.chart.options.rotation +
+            90 +
+            circleRotationHelper.degree
+            // 290
+          );
+
+          // return rotationValues[ctx.dataIndex].rotationValueWithDegree;
+          // return (
+          //   rotationValues[ctx.dataIndex].minDegree +
+          //   circleRotationHelper.degree
+          // );
+          // return rotationValues[ctx.dataIndex].minDegree + (.rotationValues.length);
         },
         formatter: (_, context) => context.chart.data.labels[context.dataIndex],
         font: { size: 15 },
@@ -898,12 +935,11 @@ let myChart = new Chart(wheel, {
 
 //display value based on the randomAngle
 const valueGenerator = (angleValue) => {
-  console.log(angleValue);
-
+  let wValue = checkIfValueIsGreaterThenFullCircle(angleValue);
   // rotationValues = 275;
   for (let i of rotationValues) {
     //if the angleValue is between min and max then display it
-    if (angleValue >= i.minDegree && angleValue <= i.maxDegree) {
+    if (wValue >= i.minDegree && wValue <= i.maxDegree) {
       finalValue.innerHTML = `<p>Value: ${i.value}</p>`;
 
       game.disableSpinWheel();
