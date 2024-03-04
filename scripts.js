@@ -36,6 +36,7 @@ const catchWordDict = {
     "BARYTON",
   ],
 };
+
 const numbersOfBlocksFields = 26;
 
 // building parms
@@ -103,7 +104,8 @@ btnElementPlayer.addEventListener("click", () => {
   player.addPlayerName();
 
   //start game and close window
-  startGame("pplpp llppll", "Powiedzenia");
+  let pickedWord = catchWordGenerator.returnRandomCatchWordAndCategory();
+  startGame(pickedWord.catchword, pickedWord.category);
 
   popupWindow.classList.add("disablePopup");
 });
@@ -221,6 +223,66 @@ class CategoryAndCatchword {
     this.catchword = "catchword";
   }
   cleanCategory() {}
+}
+
+class CatchWordGenerator {
+  constructor(catchWordObj) {
+    this.catchWordObject = catchWordObj;
+    console.log(catchWordObj);
+    this.catchwordList = [];
+    this.categoryList = [];
+    this.lengthItemInCategorys = [];
+    this.allCatchWords = 0;
+    this.createCategoryList();
+    this.lengthOfAllItemsInCategorys();
+    this.returnRandomCatchWordAndCategory();
+  }
+  createCategoryList() {
+    console.log(this.catchWordObject);
+    let category = Object.keys(this.catchWordObject);
+    this.categoryList = category;
+    console.log(this.categoryList);
+    // this.lengthOfAllItemsInCategorys();
+  }
+  lengthOfAllItemsInCategorys() {
+    console.log("this-");
+    let tempValue = 0;
+    for (let w = 0; w < this.categoryList.length; w++) {
+      let value = this.catchWordObject[this.categoryList[w]].length;
+      tempValue += value;
+      this.lengthItemInCategorys.push(value);
+    }
+    this.allCatchWords = tempValue;
+
+    console.log(this.allCatchWords);
+  }
+  get_N_ItemFrom(n) {
+    let tempValue = 0;
+    for (let i = 0; i < this.lengthItemInCategorys.length; i++) {
+      tempValue += this.lengthItemInCategorys[i];
+      if (n <= tempValue) {
+        console.log("tempValue");
+        console.log(tempValue);
+        return {
+          indexCategory: i,
+          indexCatword: tempValue - n,
+        };
+      }
+    }
+  }
+  returnRandomCatchWordAndCategory() {
+    let randomNumber = Math.floor(Math.random() * this.allCatchWords);
+    let pickedCatchwordIndexAndCategoryIndex =
+      this.get_N_ItemFrom(randomNumber);
+    let category =
+      this.categoryList[pickedCatchwordIndexAndCategoryIndex.indexCategory];
+    let catchword =
+      this.catchWordObject[category][
+        pickedCatchwordIndexAndCategoryIndex.indexCatword
+      ];
+    console.log(catchword, category);
+    return { catchword: catchword.toLowerCase(), category: category };
+  }
 }
 
 class Player {
@@ -417,7 +479,8 @@ class GameLogic {
   }
   nextCatchword() {
     // aka next round
-    startGame("lll", "zwierzęta");
+    let pickedWord = catchWordGenerator.returnRandomCatchWordAndCategory();
+    startGame(pickedWord.catchword, pickedWord.category);
   }
 }
 
@@ -510,49 +573,6 @@ class AlphabetButtons {
   }
 }
 
-class CatchWordGenerator {
-  constructor(listOfCatchwordsWithCategory) {
-    this.catchWordObject = listOfCatchwordsWithCategory;
-    this.catchwordList = [];
-    this.categoryList = [];
-    this.lengthItemInCategorys = [];
-    this.allCatchWords = 0;
-    this.categoryList();
-    this.lengthOfAllItemsInCategorys();
-  }
-  createCategoryList() {
-    this.categoryList = Object.keys(this.catchWordObject);
-  }
-  lengthOfAllItemsInCategorys() {
-    let tempValue = 0;
-    for (i = 0; i < this.categoryList.length; i++) {
-      tempValue += this.catchWordObject[this.categoryList[i]].length;
-      this.lengthItemInCategorys.push(tempValue);
-    }
-    this.allCatchWords = tempValue;
-  }
-  get_N_ItemFrom(n) {
-    let tempValue = 0;
-    for (i = 0; i < this.lengthItemInCategorys.length; i++) {
-      tempValue += this.lengthItemInCategorys[i];
-      if (n <= tempValue) {
-        return i, this.allCatchWords - tempValue;
-      }
-    }
-  }
-  returnRandomCatchWordAndCategory() {
-    let randomNumber = Math.floor(Math.random() * this.allCatchWords);
-    let pickedCatchwordIndexAndCategoryIndex =
-      this.get_N_ItemFrom(randomNumber);
-    let category = this.categoryList[pickedCatchwordIndexAndCategoryIndex[0]];
-    let catchword =
-      this.catchWordObject[category][
-        pickedCatchwordIndexAndCategoryIndex[1] - 1
-      ];
-    return catchword, category;
-  }
-}
-
 // class constructors
 const categoryAndCatchword = new CategoryAndCatchword();
 const player = new Player(life);
@@ -560,6 +580,7 @@ addLife(player.playerLife);
 const game = new GameLogic();
 const alphabetButtons = new AlphabetButtons();
 const circleRotationHelper = new RotationHelper();
+const catchWordGenerator = new CatchWordGenerator(catchWordDict);
 
 // adding first and last row of letters on html
 for (i = 0; i < numbersOfBlocksFields; i++) {
