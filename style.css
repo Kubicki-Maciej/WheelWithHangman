@@ -1,6 +1,8 @@
 :root {
   --main-color: #393186;
   --second-color: #fedd0d;
+  --btn-color: #d3bb1a;
+  --funky-font: "Peralta", serif;
 }
 
 @font-face {
@@ -229,13 +231,14 @@ body {
 img {
   position: absolute;
   width: 4em;
-  top: 45%;
-  right: -8%;
+  top: 50%;
+  right: 50%;
+  /* transform: translate(0); */
 }
 #final-value {
   font-size: 1.5em;
   text-align: center;
-  margin-top: 1.5em;
+  margin-top: 12px;
   color: #202020;
   font-weight: 500;
 }
@@ -285,13 +288,17 @@ img {
   flex-direction: column;
   justify-content: space-between;
   background-color: grey;
-  height: 10rem;
+  height: 20rem;
+  align-items: center;
+  padding: 30px;
+  border-radius: 20px;
 }
 .playerContainer input {
   height: 30px;
   margin: 20px;
   padding: 10px;
 }
+
 .playerContainer p {
   font-size: 36px;
 }
@@ -320,4 +327,17 @@ img {
 
 .basicFont {
   font-family: "Inter", sans-serif;
+}
+
+.btn-yellow {
+  border-radius: 60px;
+  font-family: "Inter", sans-serif;
+  color: #ffffff;
+  margin: 12px, 36px, 10px, 36px;
+  width: 168px;
+  height: 36px;
+  background-color: var(--btn-color);
+  -webkit-box-shadow: 0px -4px 10px 1px rgba(254, 237, 13, 1);
+  -moz-box-shadow: 0px -4px 10px 1px rgba(254, 237, 13, 1);
+  box-shadow: 0px -4px 10px 1px rgba(254, 237, 13, 1);
 }
