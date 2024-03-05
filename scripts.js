@@ -115,6 +115,22 @@ let btnCancelLoseGame = document.getElementById("cancelLoseGame");
 let btnplayAgain = document.getElementById("playAgain");
 let popupWindow = document.getElementById("popupWindow");
 
+const valueGenerator = (angleValue) => {
+  let wValue = checkIfValueIsGreaterThenFullCircle(angleValue);
+
+  for (let i of rotationValues) {
+    //if the angleValue is between min and max then display it
+    if (wValue >= i.minDegree && wValue <= i.maxDegree) {
+      finalValue.innerHTML = `<p>Wynik: ${i.value}</p>`;
+
+      game.disableSpinWheel();
+      // value from wheel
+      game.spinWheel(i.value);
+      break;
+    }
+  }
+};
+
 // listeners
 btnElementPlayer.addEventListener("click", () => {
   // console.log("PLAYER READY ,GAME STARTED");
@@ -966,18 +982,3 @@ myChart.defaults.elements.arc.borderColor = "#36A2EB";
 // myChart.defaults.borderColor = ;
 
 //display value based on the randomAngle
-const valueGenerator = (angleValue) => {
-  let wValue = checkIfValueIsGreaterThenFullCircle(angleValue);
-
-  for (let i of rotationValues) {
-    //if the angleValue is between min and max then display it
-    if (wValue >= i.minDegree && wValue <= i.maxDegree) {
-      finalValue.innerHTML = `<p>Wynik: ${i.value}</p>`;
-
-      game.disableSpinWheel();
-      // value from wheel
-      game.spinWheel(i.value);
-      break;
-    }
-  }
-};
