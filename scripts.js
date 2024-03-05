@@ -1,19 +1,22 @@
 // GAME BUILDING PARAMS
+
+const showCatchwordInConsole = true;
+const valuesWheel = [1, 50, 5, "25", "tracisz życie", 100, "bankrut", 5];
 // const valuesWheel = [1, 50, "bankrut", "bankrut", "bankrut", 100, "bankrut", 5];
-// const valuesWheel = [1, 50, 5, "25", "tracisz życie", 100, "bankrut", 5];
-const valuesWheel = [
-  "tracisz życie",
-  "tracisz życie",
-  "tracisz życie",
-  "tracisz życie",
-  "tracisz życie",
-  "tracisz życie",
-  "tracisz życie",
-  "tracisz życie",
-];
+// const valuesWheel = [
+//   "tracisz życie",
+//   "tracisz życie",
+//   "tracisz życie",
+//   "tracisz życie",
+//   "tracisz życie",
+//   "tracisz życie",
+//   "tracisz życie",
+//   "tracisz życie",
+// ];
+
 const pieColors = ["#D1B419", "#393186"];
 
-const life = 2;
+const life = 3;
 
 const catchWordDict = {
   kompozytorzy: [
@@ -112,17 +115,20 @@ let popupWindow = document.getElementById("popupWindow");
 
 // listeners
 btnElementPlayer.addEventListener("click", () => {
-  console.log("PLAYER READY ,GAME STARTED");
+  // console.log("PLAYER READY ,GAME STARTED");
   player.addPlayerName();
 
   //start game and close window
   let pickedWord = catchWordGenerator.returnRandomCatchWordAndCategory();
+  if (showCatchwordInConsole) {
+    console.log(pickedWord.catchword);
+  }
   startGame(pickedWord.catchword, pickedWord.category);
 
   popupWindow.classList.add("disablePopup");
 });
 btnNextRound.addEventListener("click", () => {
-  console.log("nastepna runda");
+  // console.log("nastepna runda");
   game.resetGameFields();
   game.nextCatchword();
   game.removeWinWindow();
@@ -241,7 +247,7 @@ class CategoryAndCatchword {
 class CatchWordGenerator {
   constructor(catchWordObj) {
     this.catchWordObject = catchWordObj;
-    console.log(catchWordObj);
+    // console.log(catchWordObj);
     this.catchwordList = [];
     this.categoryList = [];
     this.lengthItemInCategorys = [];
@@ -251,14 +257,14 @@ class CatchWordGenerator {
     this.returnRandomCatchWordAndCategory();
   }
   createCategoryList() {
-    console.log(this.catchWordObject);
+    // console.log(this.catchWordObject);
     let category = Object.keys(this.catchWordObject);
     this.categoryList = category;
-    console.log(this.categoryList);
+    // console.log(this.categoryList);
     // this.lengthOfAllItemsInCategorys();
   }
   lengthOfAllItemsInCategorys() {
-    console.log("this-");
+    // console.log("this-");
     let tempValue = 0;
     for (let w = 0; w < this.categoryList.length; w++) {
       let value = this.catchWordObject[this.categoryList[w]].length;
@@ -267,15 +273,15 @@ class CatchWordGenerator {
     }
     this.allCatchWords = tempValue;
 
-    console.log(this.allCatchWords);
+    // console.log(this.allCatchWords);
   }
   get_N_ItemFrom(n) {
     let tempValue = 0;
     for (let i = 0; i < this.lengthItemInCategorys.length; i++) {
       tempValue += this.lengthItemInCategorys[i];
       if (n <= tempValue) {
-        console.log("tempValue");
-        console.log(tempValue);
+        // console.log("tempValue");
+        // console.log(tempValue);
         return {
           indexCategory: i,
           indexCatword: tempValue - n,
@@ -293,7 +299,7 @@ class CatchWordGenerator {
       this.catchWordObject[category][
         pickedCatchwordIndexAndCategoryIndex.indexCatword
       ];
-    console.log(catchword, category);
+    // console.log(catchword, category);
     return { catchword: catchword.toLowerCase(), category: category };
   }
 }
@@ -335,7 +341,7 @@ class Player {
   }
   checkIfPlayerALive() {
     if (this.playerLife <= 0) {
-      console.log("you lose");
+      // console.log("you lose");
       game.gameLost();
     }
   }
@@ -364,14 +370,14 @@ class GameLogic {
     this.letterUsed = [];
     categoryAndCatchword.cleanCatchword();
     Array.from(document.querySelectorAll(".field")).forEach((element) => {
-      console.log(element.textContent);
+      // console.log(element.textContent);
       element.classList.remove("open");
       element.textContent = "";
     });
   }
 
   spinWheel(result) {
-    console.log(result);
+    // console.log(result);
     /* 
     1 spinujesz wheelem / blokuje spining wheelem
     2 sprawdzany jest wynik 
@@ -448,10 +454,10 @@ class GameLogic {
   letterFromInputElement(letter) {
     let inputLetter = letter.toLowerCase();
     if (this.letterUsed.includes(inputLetter)) {
-      console.log("do nothing");
+      // console.log("do nothing");
       return false;
     } else {
-      console.log("dodano litere");
+      // console.log("dodano litere");
       this.letterUsed.push(inputLetter);
       return inputLetter;
     }
@@ -477,22 +483,16 @@ class GameLogic {
   gameWon() {
     player.addPoints(1000);
     winWindow.classList.remove("disablePopup");
-
-    // okno czy grasz dalej
-    // z punktami nawa gracza i wyborem
-    // tak
-    // losujesz nowe hasło
-    // resetujesz plansze
-    // nie
-    // resetujesz plansze gracza
-    // dajesz ekran koncowy
   }
   restartGame() {
     player.playerRestart();
   }
   nextCatchword() {
-    // aka next round
+    //next round
     let pickedWord = catchWordGenerator.returnRandomCatchWordAndCategory();
+    if (showCatchwordInConsole) {
+      console.log(pickedWord.catchword);
+    }
     startGame(pickedWord.catchword, pickedWord.category);
   }
 }
@@ -569,7 +569,7 @@ class AlphabetButtons {
       if (!isButton) {
         return;
       } else {
-        console.log(event.target.id);
+        // console.log(event.target.id);
         game.activateLetterListener(event.target.id);
       }
     });
@@ -629,23 +629,10 @@ function lowerAllWordsInList(listWords) {
 }
 
 function putAllWords(listCatchword) {
-  // dodaje slowa do tabel
-
-  // console.log(listCatchword);
-
   let positionOnTable = orderWordIndexStart[1]; // this determinate row
   let indexListOfRowsWord = positionOnTable;
-  // console.log(indexListOfRowsWord);
-  // console.log(element);
-  putEmptyWord(listCatchword, indexListOfRowsWord, 1);
 
-  // for (i = 0; i <= listCatchword.length; i++) {
-  //   let positionOnTable = orderWordIndexStart[listCatchword.length - 1];
-  //   let indexListOfRowsWord = positionOnTable + i;
-  //   console.log(indexListOfRowsWord);
-  //   console.log(listCatchword[i]);
-  //   putEmptyWord(listCatchword[i], indexListOfRowsWord);
-  // }
+  putEmptyWord(listCatchword, indexListOfRowsWord, 1);
 }
 
 function putEmptyWord(catchword, indexStart, index) {
@@ -679,7 +666,7 @@ function revealFields(
   positionNumberStart,
   splitedcatchword
 ) {
-  console.log(splitedcatchword);
+  // console.log(splitedcatchword);
   for (j = 0; j < lettersCount; j++) {
     if (splitedcatchword[j] == " ") {
     } else {
@@ -917,7 +904,7 @@ function createData(dataValues) {
 
 let rotationValues = createDegreeValues(valuesWheel);
 
-console.log(rotationValues);
+// console.log(rotationValues);
 let dataSetToChart = createData(valuesWheel);
 
 let myChart = new Chart(wheel, {
