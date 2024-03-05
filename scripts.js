@@ -976,13 +976,18 @@ let myChart = new Chart(wheel, {
     responsive: true,
     animation: { duration: 0 },
     plugins: {
+      position: "left",
       tooltip: false,
       legend: false,
       datalabels: {
         borderColor: "black",
         // rotation: 60,
         color: "#ffffff",
+        // anchor: "end", // Change the position of data labels to end
         align: "center",
+        // anchor: "end",
+        // offset: -50,
+
         transform: "45%",
 
         // rotation: "45",
@@ -993,11 +998,16 @@ let myChart = new Chart(wheel, {
             ctx.chart.options.rotation +
             90 +
             circleRotationHelper.degree
-            // 290
           );
         },
         formatter: (_, context) => context.chart.data.labels[context.dataIndex],
-        font: { size: 15, family: "Peralta" },
+        font: (context) => {
+          if (context.chart.data.labels[context.dataIndex].length > 5) {
+            return { size: 12, family: "Peralta" };
+          } else {
+            return { size: 20, family: "Peralta" };
+          }
+        },
       },
       display: "auto",
     },
