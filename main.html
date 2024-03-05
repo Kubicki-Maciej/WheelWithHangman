@@ -21,17 +21,26 @@
   </head>
   <body>
     <div class="popupWindow disablePopup" id="winWindow">
-      <p>Wygrales czy grasz dalej ?</p>
-      <button id="nextRound">Tak</button>
-      <button id="cancelGame">Nie</button>
+      <div class="popupContainer">
+        <div class="winContainer">
+          <p>Wygrales czy grasz dalej ?</p>
+          <div style="display: flex; flex-direction: row">
+            <button class="btn-yellow" id="nextRound">Tak</button>
+            <button class="btn-yellow" id="cancelGame">Nie</button>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="popupWindow disablePopup" id="loseWindow">
-      <p>
-        Przegrales Czy chcesz zagrać jeszcze raz ? if nie to przelacz okno
-        popupWindow
-      </p>
-      <button id="playAgain">Tak</button>
-      <button id="cancelLoseGame">Nie</button>
+      <div class="popupContainer">
+        <div class="loseContainer">
+          <p>Przegrales Czy chcesz zagrać jeszcze raz ?</p>
+          <div style="display: flex; flex-direction: row">
+            <button class="btn-yellow" id="playAgain">Tak</button>
+            <button class="btn-yellow" id="cancelLoseGame">Nie</button>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="popupWindow" id="popupWindow">
       <!-- <button class="closePopup" id="closePopup">x</button> -->
@@ -47,7 +56,7 @@
       <div class="controlPanel">
         <div class="user">
           <div class="nameContainer">
-            <p class="basicFont">Nazwa gracza</p>
+            <p class="basicFont">Użytkownik</p>
             <div class="nameWithHearth">
               <p class="userName" id="userName"></p>
               <div class="lifeBar" id="lifeBar"></div>
@@ -78,10 +87,15 @@
       <div class="wheelContainer">
         <div class="wrapper">
           <div class="container">
+            <div class="subwheel"></div>
             <canvas id="wheel"></canvas>
-            <button id="spin-btn">Graj</button>
-            <img src="spinner-arrow-.svg" alt="V" />
+
+            <div class="arrow"></div>
           </div>
+          <div class="btnContainer">
+            <button id="spin-btn" class="btn-yellow">graj</button>
+          </div>
+
           <div id="final-value">
             <p>Kliknij graj by zacząć</p>
           </div>

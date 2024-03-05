@@ -1,4 +1,5 @@
 :root {
+  /* --main-color: ; */
   --main-color: #393186;
   --second-color: #fedd0d;
   --btn-color: #d3bb1a;
@@ -7,16 +8,23 @@
 
 @font-face {
   font-family: "Peralta";
-  src: url("path/to/peralta.woff2") format("woff2"),
-    url("path/to/peralta.woff") format("woff");
+  /* src: url("path/to/peralta.woff2") format("woff2"); */
+  /* url("path/to/peralta.woff") format("woff"); */
 }
 
 .field {
+  display: flex;
   height: 55px;
   width: 40px;
   background-color: var(--main-color);
   margin: 3px;
   border-radius: 5px;
+  color: var(--main-color);
+  justify-content: center;
+
+  flex-direction: row;
+  font-size: 26px;
+  align-items: center;
 }
 
 .letterfields {
@@ -30,6 +38,7 @@
 .firstRowLettersField {
   display: flex;
   flex-direction: row;
+  display: none;
 }
 .secondRowLettersField {
   display: flex;
@@ -38,6 +47,7 @@
 .thirdRowLettersField {
   display: flex;
   flex-direction: row;
+  display: none;
 }
 .fourthRowLettersField {
   display: flex;
@@ -113,8 +123,8 @@ navBar
 }
 
 .hearth {
-  height: 25px;
-  width: 25px;
+  height: 15px;
+  width: 15px;
   background-color: red;
   margin-left: 10px;
 }
@@ -126,6 +136,7 @@ navBar
   margin: 5px;
   display: flex;
   flex-direction: column;
+  color: var(--main-color);
 }
 .user {
   margin-left: 10px;
@@ -152,12 +163,49 @@ navBar
   border: #f9f9f9 1px solid;
   color: var(--main-color);
 }
-
+.points {
+  color: var(--main-color);
+}
 /* 
+
 
 wheel style
 
+
 */
+.subwheel {
+  position: absolute;
+  height: 110%;
+  width: 110%;
+  background-color: var(--main-color);
+  z-index: -10;
+  /* padding: 10px 10px 10px 10px; */
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  border-radius: 100%;
+}
+.arrow {
+  position: absolute;
+  height: 30px;
+  width: 20px;
+  background-color: hsl(247, 10%, 35%);
+  z-index: 10;
+  /* padding: 10px 10px 10px 10px; */
+  transform: translate(-50%, -50%);
+  top: 0;
+  left: 50%;
+
+  background-color: rgba(57, 49, 134, 1);
+  background-image: linear-gradient(
+    180deg,
+    rgba(57, 49, 134, 1) 50%,
+    rgba(152, 176, 255, 1) 100%
+  );
+
+  clip-path: polygon(100% 0, 0 0, 50% 100%);
+}
+
 .wheelContainer {
   display: flex;
   height: 100%;
@@ -185,7 +233,7 @@ body {
   max-width: 34.37em;
   max-height: 65vh;
   background: rgba(0, 0, 0, 0);
-  justify-content: center;
+
   /* position: absolute; */
   /* transform: translate(-50%, -50%); */
   /* top: 65%; */
@@ -212,21 +260,22 @@ body {
   }
 }
 #spin-btn {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  top: 50%;
-  left: 50%;
-  height: 26%;
-  width: 26%;
-  border-radius: 50%;
+  height: 36px;
+  width: 130px;
+  border-radius: 20px;
   cursor: pointer;
+  margin-top: 50px;
+  justify-content: center;
+
   border: 0;
-  background: radial-gradient(#fdcf3b 50%, #d88a40 85%);
-  color: #c66e16;
+  /* background: radial-gradient(#fdcf3b 50%, #d88a40 85%); */
+  background-color: #d3bb1a;
+  color: #ffffff;
   text-transform: uppercase;
-  font-size: 1.8em;
-  letter-spacing: 0.1em;
-  font-weight: 600;
+  font-size: 26px;
+
+  /* letter-spacing: 0.1em; */
+  font-weight: 700;
 }
 img {
   position: absolute;
@@ -242,6 +291,12 @@ img {
   color: #202020;
   font-weight: 500;
 }
+.btnContainer {
+  display: flex;
+  justify-content: center;
+  display: row;
+}
+
 @media screen and (max-width: 768px) {
   .wrapper {
     font-size: 12px;
@@ -283,17 +338,43 @@ img {
   align-items: center;
   justify-content: center;
 }
-.playerContainer {
+
+.winContainer {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background-color: grey;
+  background-color: var(--main-color);
   height: 20rem;
   align-items: center;
   padding: 30px;
   border-radius: 20px;
+  color: white;
+}
+.loseContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: var(--main-color);
+  height: 20rem;
+  align-items: center;
+  padding: 30px;
+  border-radius: 20px;
+  color: white;
+}
+
+.playerContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: var(--main-color);
+  height: 20rem;
+  align-items: center;
+  padding: 30px;
+  border-radius: 20px;
+  color: white;
 }
 .playerContainer input {
+  border-radius: 10px;
   height: 30px;
   margin: 20px;
   padding: 10px;
@@ -337,7 +418,6 @@ img {
   width: 168px;
   height: 36px;
   background-color: var(--btn-color);
-  -webkit-box-shadow: 0px -4px 10px 1px rgba(254, 237, 13, 1);
-  -moz-box-shadow: 0px -4px 10px 1px rgba(254, 237, 13, 1);
+
   box-shadow: 0px -4px 10px 1px rgba(254, 237, 13, 1);
 }

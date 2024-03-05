@@ -1,7 +1,19 @@
 // GAME BUILDING PARAMS
-const valuesWheel = [1, 50, "bankrut", 500, 25, 100, "tracisz życie", 5];
-const pieColors = ["#8b35bc", "#006600"];
-const life = 5;
+// const valuesWheel = [1, 50, "bankrut", "bankrut", "bankrut", 100, "bankrut", 5];
+// const valuesWheel = [1, 50, 5, "25", "tracisz życie", 100, "bankrut", 5];
+const valuesWheel = [
+  "tracisz życie",
+  "tracisz życie",
+  "tracisz życie",
+  "tracisz życie",
+  "tracisz życie",
+  "tracisz życie",
+  "tracisz życie",
+  "tracisz życie",
+];
+const pieColors = ["#D1B419", "#393186"];
+
+const life = 2;
 
 const catchWordDict = {
   kompozytorzy: [
@@ -40,7 +52,7 @@ const catchWordDict = {
 const numbersOfBlocksFields = 26;
 
 // building parms
-let orderWordIndexStart = [1, 1, 0];
+let orderWordIndexStart = [1, 1, 1];
 let firstRowLettersField = [];
 let secondRowLettersField = [];
 let thirdRowLettersField = [];
@@ -126,6 +138,7 @@ btnCancelLoseGame.addEventListener("click", () => {
   game.resetGameFields();
   inputElementPlayer.value = "";
   game.restartGame();
+  game.removeLostWindow();
   popupWindow.classList.remove("disablePopup");
 });
 // spin LOGIC
@@ -133,13 +146,13 @@ btnplayAgain.addEventListener("click", () => {
   game.resetGameFields();
   player.resetGame();
   game.nextCatchword();
-  game.removeWinWindow();
-  // game.removeLostWindow();
+  // game.removeWinWindow();
+  game.removeLostWindow();
 });
 spinBtn.addEventListener("click", () => {
   game.disableSpinWheel();
 
-  finalValue.innerHTML = `<p>Good Luck!</p>`;
+  finalValue.innerHTML = `<p>Powodzenia !</p>`;
   let randomDegree = Math.floor(Math.random() * 360);
 
   let rotationInterval = window.setInterval(() => {
@@ -923,16 +936,24 @@ let myChart = new Chart(wheel, {
   },
   options: {
     //Responsive chart
+    elements: {
+      arc: {
+        backgroundColor: "rgba(0,0,0,0.1)",
+        borderColor: "black",
+      },
+    },
     responsive: true,
     animation: { duration: 0 },
     plugins: {
       tooltip: false,
       legend: false,
       datalabels: {
+        borderColor: "black",
         // rotation: 60,
         color: "#ffffff",
         align: "center",
         transform: "45%",
+
         // rotation: "45",
 
         rotation: function (ctx) {
@@ -943,30 +964,26 @@ let myChart = new Chart(wheel, {
             circleRotationHelper.degree
             // 290
           );
-
-          // return rotationValues[ctx.dataIndex].rotationValueWithDegree;
-          // return (
-          //   rotationValues[ctx.dataIndex].minDegree +
-          //   circleRotationHelper.degree
-          // );
-          // return rotationValues[ctx.dataIndex].minDegree + (.rotationValues.length);
         },
         formatter: (_, context) => context.chart.data.labels[context.dataIndex],
-        font: { size: 15 },
+        font: { size: 20, family: "Peralta" },
       },
       display: "auto",
     },
   },
 });
 
+myChart.defaults.elements.arc.borderColor = "#36A2EB";
+// myChart.defaults.borderColor = ;
+
 //display value based on the randomAngle
 const valueGenerator = (angleValue) => {
   let wValue = checkIfValueIsGreaterThenFullCircle(angleValue);
-  // rotationValues = 275;
+
   for (let i of rotationValues) {
     //if the angleValue is between min and max then display it
     if (wValue >= i.minDegree && wValue <= i.maxDegree) {
-      finalValue.innerHTML = `<p>Value: ${i.value}</p>`;
+      finalValue.innerHTML = `<p>Wynik: ${i.value}</p>`;
 
       game.disableSpinWheel();
       // value from wheel
@@ -976,7 +993,5 @@ const valueGenerator = (angleValue) => {
   }
 };
 
-//Spinner count
 let count = 0;
-//100 rotations for animation and last rotation for result
 let resultValue = 101;
