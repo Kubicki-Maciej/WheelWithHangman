@@ -381,6 +381,7 @@ class Player {
 class GameLogic {
   constructor() {
     this.points = 0;
+    this.multiply = 1;
     this.letterUsed = [];
   }
 
@@ -439,9 +440,10 @@ class GameLogic {
   }
   clearTempPoints() {
     this.points = 0;
+    this.multiply = 1;
   }
   addPointsToPlayer() {
-    player.addPoints(this.points);
+    player.addPoints(this.points * this.multiply);
     this.points = 0;
   }
 
@@ -597,6 +599,7 @@ class AlphabetButtons {
       this.alphabetObjectsButton[i].disabled = true;
     }
   }
+
   enableButtons() {
     for (i = 0; i < this.alphabetObjectsButton.length; i++) {
       this.alphabetObjectsButton[i].disabled = false;
@@ -792,6 +795,8 @@ function checkingAllRowsForLetter(letter) {
   // add logic if word in row
   let positionPickedLetter = checkingPickedLetter(gameObject.catchword, letter);
   if (positionPickedLetter.length) {
+    console.log(positionPickedLetter.length);
+    game.multiply = positionPickedLetter.length;
     booleanLetterInWords = true;
     addLetterOnPositionRow(
       positionPickedLetter,
@@ -815,16 +820,6 @@ Testing area
 
 */
 
-// checkingAllRowsForLetter("l");
-// checkingAllRowsForLetter("u");
-// checkingAllRowsForLetter("b");
-// checkingAllRowsForLetter("i");
-// checkingAllRowsForLetter("e");
-// checkingAllRowsForLetter("p");
-// checkingAllRowsForLetter("a");
-// checkingAllRowsForLetter("c");
-// checkingAllRowsForLetter("");
-// checkingAllRowsForLetter("s");
 function checkIfValueIsGreaterThenFullCircle(value) {
   if (value + 90 > 360) {
     return value + 90 - 360;
@@ -978,7 +973,7 @@ let myChart = new Chart(wheel, {
   },
 });
 
-myChart.defaults.elements.arc.borderColor = "#36A2EB";
+// myChart.defaults.elements.arc.borderColor = "#36A2EB";
 // myChart.defaults.borderColor = ;
 
 //display value based on the randomAngle
