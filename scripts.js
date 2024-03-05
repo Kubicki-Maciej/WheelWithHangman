@@ -2,6 +2,8 @@
 
 const showCatchwordInConsole = true;
 const valuesWheel = [1, 50, 5, "25", "tracisz życie", 100, "bankrut", 5];
+let count = 0;
+let resultValue = 101;
 // const valuesWheel = [1, 50, "bankrut", "bankrut", "bankrut", 100, "bankrut", 5];
 // const valuesWheel = [
 //   "tracisz życie",
@@ -979,6 +981,3 @@ const valueGenerator = (angleValue) => {
     }
   }
 };
-
-let count = 0;
-let resultValue = 101;
