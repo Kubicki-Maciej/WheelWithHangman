@@ -230,8 +230,8 @@ body {
   justify-content: center;
   flex-direction: column;
   width: 90%;
-  max-width: 34.37em;
-  max-height: 65vh;
+  max-width: 35vw;
+  /* max-height: 40vh; */
   background: rgba(0, 0, 0, 0);
 
   /* position: absolute; */
