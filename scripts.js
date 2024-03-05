@@ -1,7 +1,7 @@
 // GAME BUILDING PARAMS
 
 const showCatchwordInConsole = true;
-const valuesWheel = [1, 50, 5, "25", "tracisz życie", 100, "bankrut", 5];
+const valuesWheel = [1, 50, 5, 25, "tracisz życie", 100, "bankrut", 5];
 let count = 0;
 let resultValue = 101;
 // const valuesWheel = [1, 50, "bankrut", "bankrut", "bankrut", 100, "bankrut", 5];
@@ -18,7 +18,7 @@ let resultValue = 101;
 
 const pieColors = ["#D1B419", "#393186"];
 
-const life = 3;
+const life = 10;
 
 const catchWordDict = {
   kompozytorzy: [
@@ -117,10 +117,14 @@ let popupWindow = document.getElementById("popupWindow");
 
 const valueGenerator = (angleValue) => {
   let wValue = checkIfValueIsGreaterThenFullCircle(angleValue);
+  // wValue = 51;
 
   for (let i of rotationValues) {
+    console.log("sprawdzana jest czy jest wartosc wValue:");
+    console.log(wValue);
     //if the angleValue is between min and max then display it
     if (wValue >= i.minDegree && wValue <= i.maxDegree) {
+      console.log("SPELNIA WARUNEK");
       finalValue.innerHTML = `<p>Wynik: ${i.value}</p>`;
 
       game.disableSpinWheel();
@@ -173,6 +177,7 @@ btnplayAgain.addEventListener("click", () => {
   // game.removeWinWindow();
   game.removeLostWindow();
 });
+
 spinBtn.addEventListener("click", () => {
   game.disableSpinWheel();
 
@@ -182,6 +187,13 @@ spinBtn.addEventListener("click", () => {
   let rotationInterval = window.setInterval(() => {
     myChart.options.rotation = myChart.options.rotation + resultValue;
     myChart.update();
+
+    console.log({
+      rotacja: myChart.options.rotation,
+      liczbaObrotów: count,
+      wybranyStopien: randomDegree,
+    });
+
     if (myChart.options.rotation >= 360) {
       count += 1;
       resultValue -= 5;
@@ -458,17 +470,21 @@ class GameLogic {
     }
   }
   disableSpinWheel() {
+    console.log("WYŁACZAM KOŁO");
     spinBtn.disabled = true;
     spinBtn.classList.add("disabled-btn");
   }
   enableSpinWheel() {
+    console.log("WŁACZAM KOŁO");
     spinBtn.disabled = false;
     spinBtn.classList.remove("disabled-btn");
   }
   disableConfirmBtn() {
+    console.log("WYŁACZAM PRZYCISKI");
     alphabetButtons.disableButtons();
   }
   enableConfirmBtn() {
+    console.log("WŁACZAM PRZYCISKI");
     alphabetButtons.enableButtons();
   }
   letterFromInputElement(letter) {
@@ -595,12 +611,14 @@ class AlphabetButtons {
     });
   }
   disableButtons() {
+    console.log("DISABLE  LIST ALFABET");
     for (i = 0; i < this.alphabetObjectsButton.length; i++) {
       this.alphabetObjectsButton[i].disabled = true;
     }
   }
 
   enableButtons() {
+    console.log("ENABLE  LIST ALFABET");
     for (i = 0; i < this.alphabetObjectsButton.length; i++) {
       this.alphabetObjectsButton[i].disabled = false;
     }
