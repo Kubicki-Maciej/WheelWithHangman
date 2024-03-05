@@ -2,6 +2,7 @@
 
 const showCatchwordInConsole = true;
 const valuesWheel = [
+  10,
   1,
   50,
   5,
@@ -137,7 +138,7 @@ const valueGenerator = (angleValue) => {
     //if the angleValue is between min and max then display it
     if (wValue >= i.minDegree && wValue <= i.maxDegree) {
       // console.log("SPELNIA WARUNEK");
-      finalValue.innerHTML = `<p>Wynik: ${i.value}</p>`;
+      // finalValue.innerHTML = `<p>Wynik: ${i.value}</p>`;
 
       game.disableSpinWheel();
       // value from wheel
@@ -193,7 +194,7 @@ btnplayAgain.addEventListener("click", () => {
 spinBtn.addEventListener("click", () => {
   game.disableSpinWheel();
 
-  finalValue.innerHTML = `<p>Powodzenia !</p>`;
+  // finalValue.innerHTML = `<p>Powodzenia !</p>`;
   let randomDegree = Math.floor(Math.random() * 360);
 
   let rotationInterval = window.setInterval(() => {
@@ -996,7 +997,7 @@ let myChart = new Chart(wheel, {
           );
         },
         formatter: (_, context) => context.chart.data.labels[context.dataIndex],
-        font: { size: 20, family: "Peralta" },
+        font: { size: 15, family: "Peralta" },
       },
       display: "auto",
     },
@@ -1005,5 +1006,3 @@ let myChart = new Chart(wheel, {
 
 // myChart.defaults.elements.arc.borderColor = "#36A2EB";
 // myChart.defaults.borderColor = ;
-
-//display value based on the randomAngle

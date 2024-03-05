@@ -14,8 +14,8 @@
 
 .field {
   display: flex;
-  height: 55px;
-  width: 40px;
+  height: 40px;
+  width: 33px;
   background-color: var(--main-color);
   margin: 3px;
   border-radius: 5px;
@@ -193,7 +193,7 @@ wheel style
   z-index: 10;
   /* padding: 10px 10px 10px 10px; */
   transform: translate(-50%, -50%);
-  top: 0;
+  top: 1%;
   left: 50%;
 
   background-color: rgba(57, 49, 134, 1);
@@ -230,8 +230,8 @@ body {
   justify-content: center;
   flex-direction: column;
   width: 90%;
-  max-width: 35vw;
-  /* max-height: 40vh; */
+  max-width: 26em;
+  max-height: 65vh;
   background: rgba(0, 0, 0, 0);
 
   /* position: absolute; */
@@ -239,7 +239,7 @@ body {
   /* top: 65%; */
   /* left: 50%; */
   /* margin: 3em; */
-  padding: 2em;
+  padding: 0.5em;
   border-radius: 1em;
   /* box-shadow: 0 4em 5em rgba(27, 8, 53, 0.2); */
 }
