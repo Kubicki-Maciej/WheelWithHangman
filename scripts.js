@@ -110,6 +110,7 @@ let showValueDiv = document.getElementById("showValue");
 let pointsEarnedWin = document.getElementById("earnedPointsWin");
 let pointsEarnedLose = document.getElementById("earnedPointsLose");
 let points = document.getElementById("points");
+let playerValidationDiv = document.getElementById("playerValidationDiv");
 
 // let wheelImg = document.getElementById("wheelImg");
 
@@ -135,18 +136,22 @@ const valueGenerator = (angleValue) => {
 
 // listeners
 btnElementPlayer.addEventListener("click", () => {
-  // console.log("PLAYER READY ,GAME STARTED");
-  game.enableSpinWheel();
-  player.addPlayerName();
+  if (inputElementPlayer.value.length >= 3) {
+    // console.log("PLAYER READY ,GAME STARTED");
+    game.enableSpinWheel();
+    player.addPlayerName();
 
-  //start game and close window
-  let pickedWord = catchWordGenerator.returnRandomCatchWordAndCategory();
-  if (showCatchwordInConsole) {
-    console.log(pickedWord.catchword);
+    //start game and close window
+    let pickedWord = catchWordGenerator.returnRandomCatchWordAndCategory();
+    if (showCatchwordInConsole) {
+      console.log(pickedWord.catchword);
+    }
+    startGame(pickedWord.catchword, pickedWord.category);
+
+    popupWindow.classList.add("disablePopup");
+  } else {
+    showInputToShort();
   }
-  startGame(pickedWord.catchword, pickedWord.category);
-
-  popupWindow.classList.add("disablePopup");
 });
 btnNextRound.addEventListener("click", () => {
   // console.log("nastepna runda");
@@ -456,10 +461,8 @@ class GameLogic {
       this.guessLetter(pickedLetter);
       this.disableConfirmBtn();
       if (player.playerLife > 0) {
-        console.log("mniejsze jest niz");
         this.enableSpinWheel();
       } else {
-        console.log("wieksze niz");
         this.disableSpinWheel();
       }
     } else {
@@ -864,6 +867,14 @@ function showMessage(message) {
   clearTimeout(timeoutId);
   timeoutId = setTimeout(function () {
     showValueDiv.innerHTML = `<p>${message}</p>`;
+  }, TIMER);
+}
+function showInputToShort() {
+  playerValidationDiv.textContent = "";
+  let timeoutId;
+  clearTimeout(timeoutId);
+  timeoutId = setTimeout(function () {
+    playerValidationDiv.textContent = `${"Użytkownik musi mieć min. 3 znaki"}`;
   }, TIMER);
 }
 

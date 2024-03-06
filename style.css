@@ -361,6 +361,11 @@ img {
   width: 100%;
   background-color: whitesmoke;
 }
+.playerValidationDiv {
+  color: white;
+  font-size: 15px;
+}
+
 .popupTest {
   /* display: none; */
   z-index: 1000;
