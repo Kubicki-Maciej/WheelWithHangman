@@ -1,5 +1,5 @@
 // GAME BUILDING PARAMS
-const TIMER = 10;
+const TIMER = 2000;
 const showCatchwordInConsole = true;
 const valuesWheel = [10, 50, 200, 250, "utrata kolejki", 100, 150, "bankrut"];
 let count = 0;
