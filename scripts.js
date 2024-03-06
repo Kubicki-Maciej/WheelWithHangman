@@ -150,6 +150,7 @@ btnElementPlayer.addEventListener("click", () => {
 
     popupWindow.classList.add("disablePopup");
   } else {
+    console.log("to short");
     showInputToShort();
   }
 });
@@ -870,11 +871,11 @@ function showMessage(message) {
   }, TIMER);
 }
 function showInputToShort() {
-  playerValidationDiv.textContent = "";
+  playerValidationDiv.textContent = `${"Użytkownik musi mieć min. 3 znaki"}`;
   let timeoutId;
   clearTimeout(timeoutId);
   timeoutId = setTimeout(function () {
-    playerValidationDiv.textContent = `${"Użytkownik musi mieć min. 3 znaki"}`;
+    playerValidationDiv.textContent = "";
   }, TIMER);
 }
 
@@ -950,7 +951,3 @@ function getRandomValueAndRotate() {
   wheelImg.style.transform = ` rotate(${value}deg)`;
   getValueFromWheel(value);
 }
-
-// let rotationValues = createDegreeValues(valuesWheel); Old with datachart
-
-// getRandomValueAndRotate();
