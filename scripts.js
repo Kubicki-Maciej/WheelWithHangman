@@ -1,5 +1,5 @@
 // GAME BUILDING PARAMS
-const TIMER = 2000;
+const TIMER = 10;
 const showCatchwordInConsole = true;
 const valuesWheel = [10, 50, 200, 250, "utrata kolejki", 100, 150, "bankrut"];
 let count = 0;
@@ -138,11 +138,13 @@ const valueGenerator = (angleValue) => {
 btnElementPlayer.addEventListener("click", () => {
   if (inputElementPlayer.value.length >= 3) {
     // console.log("PLAYER READY ,GAME STARTED");
+
     game.enableSpinWheel();
     player.addPlayerName();
 
     //start game and close window
-    let pickedWord = catchWordGenerator.returnRandomCatchWordAndCategory();
+    // let pickedWord = catchWordGenerator.returnRandomCatchWordAndCategory();
+    let pickedWord = catchWordGenerator.returnTestCatchWord();
     if (showCatchwordInConsole) {
       console.log(pickedWord.catchword);
     }
@@ -156,6 +158,7 @@ btnElementPlayer.addEventListener("click", () => {
 });
 btnNextRound.addEventListener("click", () => {
   // console.log("nastepna runda");
+  game.enableSpinWheel();
   game.resetGameFields();
   game.nextCatchword();
   game.removeWinWindow();
@@ -179,6 +182,7 @@ btnCancelLoseGame.addEventListener("click", () => {
 });
 // spin LOGIC
 btnplayAgain.addEventListener("click", () => {
+  // console.log("graj ponownie");
   game.enableSpinWheel();
   game.resetGameFields();
   game.losePoints();
@@ -251,6 +255,7 @@ class CategoryAndCatchword {
   checkWordsFull() {
     if (this.catchwordCounter == this.lettersInCatchword) {
       game.gameWon();
+      game.disableSpinWheel();
     }
   }
   cleanCatchword() {
@@ -319,8 +324,13 @@ class CatchWordGenerator {
     // console.log(catchword, category);
     return { catchword: catchword.toLowerCase(), category: category };
   }
+  returnTestCatchWord() {
+    return {
+      catchword: "tsst".toLowerCase(),
+      category: "tsst",
+    };
+  }
 }
-
 class Player {
   constructor(playerLife) {
     this.name = "";
@@ -393,7 +403,14 @@ class GameLogic {
     this.points = 0;
     this.multiply = 1;
     this.letterUsed = [];
+    this.win = false;
     this.disableSpinWheel();
+  }
+  isWin() {
+    this.win = true;
+  }
+  resetWin() {
+    this.win = false;
   }
 
   resetGameFields() {
@@ -417,11 +434,13 @@ class GameLogic {
       showMessage(`Tracisz wszystkie punkty!`);
       setTimeout(this.losePoints, TIMER);
       // this.losePoints();
+      // console.log("tracisz punkty");
       this.enableSpinWheel();
     } else if (result === "utrata kolejki") {
       showMessage(`Tracisz życie!`);
       setTimeout(this.loseLife, TIMER);
       // this.loseLife();
+      // console.log("tracisz zycie");
       this.enableSpinWheel();
     }
   }
@@ -462,7 +481,13 @@ class GameLogic {
       this.guessLetter(pickedLetter);
       this.disableConfirmBtn();
       if (player.playerLife > 0) {
-        this.enableSpinWheel();
+        if (this.win == true) {
+          // console.log("WYGRALES");
+          this.disableSpinWheel();
+          this.resetWin();
+        } else {
+          this.enableSpinWheel();
+        }
       } else {
         this.disableSpinWheel();
       }
@@ -519,7 +544,7 @@ class GameLogic {
     // timer ?
 
     pointsEarnedLose.innerHTML = `Zdobyłeś ${
-      game.points + player.points
+      game.points * game.multiply + player.points
     } punktów`;
     player.addPlayerToListAjax();
     loseWindow.classList.remove("disablePopup");
@@ -538,9 +563,11 @@ class GameLogic {
   }
 
   gameWon() {
+    this.isWin();
+    game.disableSpinWheel();
     player.addPoints(1000);
     pointsEarnedWin.innerHTML = `Zdobyłeś  ${
-      game.points + player.points
+      game.points * game.multiply + player.points
     } punktów`;
     winWindow.classList.remove("disablePopup");
   }

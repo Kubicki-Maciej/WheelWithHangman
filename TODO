@@ -30,12 +30,12 @@ Uwagi:
 
             900
 
-1 ___
+1 DONE
 2 DONE
 2.a DONE
 3Done
 4. Done
-5.1 ___
+5.1 DONE
 
 5 semiDONE ? 
 
@@ -43,3 +43,16 @@ GameLogic.
 GAMELOST(){
     AJAX
 }
+
+Witam
+
+1. Funkcja dodająca do tabeli w 377 lini funkcja addPlayerToListAjax()
+2. Walidacja użytkownika ustawiona na min 3 znaki.
+3. 2 Linia w js odpowiada za TIMER po którym mają się pokazywać znikać elementy jest to powiązane z obrotami koła  w  CSS #wheelImg: Transition: transform 2s dobrze by było by zawsze był ten sam czas.
+4. Zmodyfikowany popup przy następnej grze / przegranej grze , wyświetla wynik.
+5. Wyświetlanie wyników aktualnej pozycji gry za pomocą elementu Div class ="showValue" id ="showValue"
+6. gra blokuje się jeżeli przegra się wygra się
+
+https://kubicki-maciej.github.io/WheelWithHangman/ czasami ma problem github pages by zaktualizować więc w załącznikach pliki.
+
+
