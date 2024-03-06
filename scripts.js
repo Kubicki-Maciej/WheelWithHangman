@@ -1,5 +1,5 @@
 // GAME BUILDING PARAMS
-const TIMER = 50;
+const TIMER = 2000;
 const showCatchwordInConsole = true;
 const valuesWheel = [10, 50, 200, 250, "utrata kolejki", 100, 150, "bankrut"];
 let count = 0;
@@ -7,7 +7,7 @@ let resultValue = 101;
 
 const pieColors = ["#D1B419", "#393186"];
 
-const life = 1;
+const life = 3;
 
 const catchWordDict = {
   kompozytorzy: [
