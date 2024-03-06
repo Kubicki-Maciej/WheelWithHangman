@@ -1,6 +1,7 @@
 // GAME BUILDING PARAMS
 const TIMER = 2000;
 const showCatchwordInConsole = true;
+const DEBUG = false;
 const valuesWheel = [10, 50, 200, 250, "utrata kolejki", 100, 150, "bankrut"];
 let count = 0;
 let resultValue = 101;
@@ -136,15 +137,23 @@ const valueGenerator = (angleValue) => {
 
 // listeners
 btnElementPlayer.addEventListener("click", () => {
-  if (inputElementPlayer.value.length >= 3) {
+  if (
+    inputElementPlayer.value.length >= 3 &&
+    inputElementPlayer.value.length <= 10
+  ) {
     // console.log("PLAYER READY ,GAME STARTED");
 
     game.enableSpinWheel();
     player.addPlayerName();
-
+    let pickedWord;
     //start game and close window
-    // let pickedWord = catchWordGenerator.returnRandomCatchWordAndCategory();
-    let pickedWord = catchWordGenerator.returnTestCatchWord();
+    if (DEBUG) {
+      pickedWord = catchWordGenerator.returnTestCatchWord();
+    } else {
+      pickedWord = catchWordGenerator.returnRandomCatchWordAndCategory();
+    }
+    //
+
     if (showCatchwordInConsole) {
       console.log(pickedWord.catchword);
     }
@@ -250,7 +259,13 @@ class CategoryAndCatchword {
   }
 
   showCategory() {
-    categoryNameElement.textContent = this.category;
+    console.log(this.category);
+    let tempCategory = this.category.split("_");
+    let tempText = "";
+    for (let word of tempCategory) {
+      tempText += word + " ";
+    }
+    categoryNameElement.textContent = tempText;
   }
   checkWordsFull() {
     if (this.catchwordCounter == this.lettersInCatchword) {
