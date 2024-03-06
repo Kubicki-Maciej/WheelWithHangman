@@ -20,28 +20,6 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="popupWindow disablePopup" id="winWindow">
-      <div class="popupContainer">
-        <div class="winContainer">
-          <p>Wygrales czy grasz dalej ?</p>
-          <div style="display: flex; flex-direction: row">
-            <button class="btn-yellow" id="nextRound">Tak</button>
-            <button class="btn-yellow" id="cancelGame">Nie</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="popupWindow disablePopup" id="loseWindow">
-      <div class="popupContainer">
-        <div class="loseContainer">
-          <p>Przegrales Czy chcesz zagrać jeszcze raz ?</p>
-          <div style="display: flex; flex-direction: row">
-            <button class="btn-yellow" id="playAgain">Tak</button>
-            <button class="btn-yellow" id="cancelLoseGame">Nie</button>
-          </div>
-        </div>
-      </div>
-    </div>
     <div class="popupWindow" id="popupWindow">
       <!-- <button class="closePopup" id="closePopup">x</button> -->
       <div class="popupContainer">
@@ -69,27 +47,53 @@
           <div class="points" id="points"></div>
         </div>
       </div>
+
       <div class="letterfields" id="letterfields">
         <div class="firstRowLettersField" id="firstRowLettersField"></div>
         <div class="secondRowLettersField" id="secondRowLettersField"></div>
         <div class="thirdRowLettersField" id="thirdRowLettersField"></div>
         <div class="fourthRowLettersField" id="fourthRowLettersField"></div>
       </div>
-      <div class="inputContainer">
-        <div class="alphabetButtons" id="alphabetButtons"></div>
-
-        <!-- <input type="text" id="singleLetterInput" maxlength="1" /> -->
-        <!-- <button disabled class="confirmBtn disabled-btn" id="confirmBtn">
-          Sprawdź Litere
-        </button> -->
-        <div class="errorMessage" id="errorMessage"></div>
+      <div class="popMessageContainer">
+        <div class="popupTest disablePopup" id="winWindow">
+          <div class="popupContainer">
+            <div class="winContainer">
+              <p id="earnedPointsWin">0</p>
+              <p>Wygrales czy grasz dalej ?</p>
+              <div style="display: flex; flex-direction: row">
+                <button class="btn-yellow" id="nextRound">Tak</button>
+                <button class="btn-yellow" id="cancelGame">Nie</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="popupTest disablePopup" id="loseWindow">
+          <div class="popupContainer">
+            <div class="loseContainer">
+              <p id="earnedPointsLose">0</p>
+              <p>Przegrales Czy chcesz zagrać jeszcze raz ?</p>
+              <div style="display: flex; flex-direction: row">
+                <button class="btn-yellow" id="playAgain">Tak</button>
+                <button class="btn-yellow" id="cancelLoseGame">Nie</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
       <div class="wheelContainer">
+        <div class="alphabetContainer">
+          <div class="inputContainer disablePopup" id="inputContainer">
+            <div class="alphabetButtons" id="alphabetButtons"></div>
+            <div class="errorMessage" id="errorMessage"></div>
+          </div>
+        </div>
         <div class="wrapper">
           <div class="container">
-            <div class="subwheel"></div>
-            <canvas id="wheel"></canvas>
-
+            <div class="imgContainer">
+              <img src="Koło1.png" id="wheelImg" />
+            </div>
+            <!-- <canvas id="wheel"></canvas> -->
             <div class="arrow"></div>
           </div>
           <div class="btnContainer">
@@ -100,6 +104,7 @@
             <!-- <p>Kliknij graj by zacząć</p> -->
           </div>
         </div>
+        <div class="showValue" id="showValue"></div>
       </div>
     </div>
     <!-- Chart JS -->

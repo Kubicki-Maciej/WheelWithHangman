@@ -1,37 +1,13 @@
 // GAME BUILDING PARAMS
-
+const TIMER = 50;
 const showCatchwordInConsole = true;
-const valuesWheel = [
-  10,
-  1,
-  50,
-  5,
-  25,
-  "strata kolejki",
-  100,
-  "bankrut",
-  5,
-  75,
-  2,
-  250,
-];
+const valuesWheel = [10, 50, 200, 250, "utrata kolejki", 100, 150, "bankrut"];
 let count = 0;
 let resultValue = 101;
-// const valuesWheel = [1, 50, "bankrut", "bankrut", "bankrut", 100, "bankrut", 5];
-// const valuesWheel = [
-//   "tracisz życie",
-//   "tracisz życie",
-//   "tracisz życie",
-//   "tracisz życie",
-//   "tracisz życie",
-//   "tracisz życie",
-//   "tracisz życie",
-//   "tracisz życie",
-// ];
 
 const pieColors = ["#D1B419", "#393186"];
 
-const life = 3;
+const life = 1;
 
 const catchWordDict = {
   kompozytorzy: [
@@ -109,6 +85,7 @@ function addLife(number) {
     container.appendChild(hearthField);
   }
 }
+let rotationValues = createWheelValues(valuesWheel);
 // End functions adding thing in HTML
 
 // getters
@@ -127,6 +104,14 @@ let btnCancelGame = document.getElementById("cancelGame");
 let btnCancelLoseGame = document.getElementById("cancelLoseGame");
 let btnplayAgain = document.getElementById("playAgain");
 let popupWindow = document.getElementById("popupWindow");
+let wheelImg = document.getElementById("wheelImg");
+let inputContainer = document.getElementById("inputContainer");
+let showValueDiv = document.getElementById("showValue");
+let pointsEarnedWin = document.getElementById("earnedPointsWin");
+let pointsEarnedLose = document.getElementById("earnedPointsLose");
+let points = document.getElementById("points");
+
+// let wheelImg = document.getElementById("wheelImg");
 
 const valueGenerator = (angleValue) => {
   let wValue = checkIfValueIsGreaterThenFullCircle(angleValue);
@@ -151,6 +136,7 @@ const valueGenerator = (angleValue) => {
 // listeners
 btnElementPlayer.addEventListener("click", () => {
   // console.log("PLAYER READY ,GAME STARTED");
+  game.enableSpinWheel();
   player.addPlayerName();
 
   //start game and close window
@@ -169,7 +155,9 @@ btnNextRound.addEventListener("click", () => {
   game.removeWinWindow();
 });
 btnCancelGame.addEventListener("click", () => {
+  player.addPlayerToListAjax();
   game.resetGameFields();
+  game.losePoints();
   inputElementPlayer.value = "";
   game.restartGame();
   game.removeWinWindow();
@@ -177,6 +165,7 @@ btnCancelGame.addEventListener("click", () => {
 });
 btnCancelLoseGame.addEventListener("click", () => {
   game.resetGameFields();
+  game.losePoints();
   inputElementPlayer.value = "";
   game.restartGame();
   game.removeLostWindow();
@@ -184,7 +173,9 @@ btnCancelLoseGame.addEventListener("click", () => {
 });
 // spin LOGIC
 btnplayAgain.addEventListener("click", () => {
+  game.enableSpinWheel();
   game.resetGameFields();
+  game.losePoints();
   player.resetGame();
   game.nextCatchword();
   // game.removeWinWindow();
@@ -193,32 +184,9 @@ btnplayAgain.addEventListener("click", () => {
 
 spinBtn.addEventListener("click", () => {
   game.disableSpinWheel();
+  resetImgDegree();
 
-  // finalValue.innerHTML = `<p>Powodzenia !</p>`;
-  let randomDegree = Math.floor(Math.random() * 360);
-
-  let rotationInterval = window.setInterval(() => {
-    myChart.options.rotation = myChart.options.rotation + resultValue;
-    myChart.update();
-
-    // console.log({
-    //   rotacja: myChart.options.rotation,
-    //   liczbaObrotów: count,
-    //   wybranyStopien: randomDegree,
-    // });
-
-    if (myChart.options.rotation >= 360) {
-      count += 1;
-      resultValue -= 5;
-      myChart.options.rotation = 0;
-    }
-    if (count > 5 && myChart.options.rotation == randomDegree) {
-      valueGenerator(randomDegree);
-      clearInterval(rotationInterval);
-      count = 0;
-      resultValue = 101;
-    }
-  }, 10);
+  getRandomValueAndRotate();
 });
 
 /* not used
@@ -384,12 +352,11 @@ class Player {
   }
   checkIfPlayerALive() {
     if (this.playerLife <= 0) {
-      // console.log("you lose");
+      game.disableSpinWheel();
       game.gameLost();
     }
   }
   updatePoints() {
-    let points = document.getElementById("points");
     points.textContent = this.points;
   }
   addPoints(points) {
@@ -401,13 +368,26 @@ class Player {
       element.classList.remove("lost");
     });
   }
+  addPlayerToListAjax() {
+    console.log(`WYSYŁAM UŻYTKOWNIKA ${this.name} z wynikiem ${this.points}`);
+    // $.get(
+    //   "pl/ajax.php?type=kolo&user=" + this.name + "&score" + this.points,
+    //   function (data, status) {
+    //     if (data != "") {
+    //     }
+    //   },
+    //   "text"
+    // );
+  }
 }
 
 class GameLogic {
   constructor() {
+    this.numberOfSpins = 1;
     this.points = 0;
     this.multiply = 1;
     this.letterUsed = [];
+    this.disableSpinWheel();
   }
 
   resetGameFields() {
@@ -421,25 +401,21 @@ class GameLogic {
   }
 
   spinWheel(result) {
-    // console.log(result);
-    /* 
-    1 spinujesz wheelem / blokuje spining wheelem
-    2 sprawdzany jest wynik 
-    3 jezeli jest on pozytywny mozesz wybrac litere
-    4 jezeli litera jest to dostajesz punkty z losowania / jezeli nie ma tracisz zycie 
-    5 jezeli haslo zostalo odgadniete dostajesz 1000 punktow
-    6 odblokowuje spining wheelem
-    */
     if (Number.isInteger(result)) {
+      showMessage(`Wypadło: ${result} wybierz litere`);
       // console.log(confirmButton.value);
       this.enableConfirmBtn();
       // this.activateLetterListener();
       this.pointWheel(result);
     } else if (result === "bankrut") {
-      this.losePoints();
+      showMessage(`Tracisz wszystkie punkty!`);
+      setTimeout(this.losePoints, TIMER);
+      // this.losePoints();
       this.enableSpinWheel();
-    } else if (result === "strata kolejki") {
-      this.loseLife();
+    } else if (result === "utrata kolejki") {
+      showMessage(`Tracisz życie!`);
+      setTimeout(this.loseLife, TIMER);
+      // this.loseLife();
       this.enableSpinWheel();
     }
   }
@@ -473,13 +449,21 @@ class GameLogic {
   }
 
   activateLetterListener(letter) {
+    // console.log("wywoluje funkcje activateLetterListener");
     let pickedLetter = this.letterFromInputElement(letter);
     if (pickedLetter) {
+      // console.log(" picknieto litere");
       this.guessLetter(pickedLetter);
       this.disableConfirmBtn();
-      this.enableSpinWheel();
+      if (player.playerLife > 0) {
+        console.log("mniejsze jest niz");
+        this.enableSpinWheel();
+      } else {
+        console.log("wieksze niz");
+        this.disableSpinWheel();
+      }
     } else {
-      // showError(`litera ${pickedLetter} została wybrana wczesniej`);
+      showMessageAndDelete(`Litera ${letter} została wcześniej wybrana`);
     }
   }
   disableSpinWheel() {
@@ -492,12 +476,27 @@ class GameLogic {
     spinBtn.disabled = false;
     spinBtn.classList.remove("disabled-btn");
   }
+
+  disableInputContainer() {
+    // console.log("WYŁACZAM KOŁO");
+    spinBtn.disabled = false;
+    inputContainer.classList.add("disablePopup");
+  }
+  enableInputContainer() {
+    // console.log("WŁACZAM KOŁO");
+    spinBtn.disabled = true;
+    inputContainer.classList.remove("disablePopup");
+  }
+
   disableConfirmBtn() {
     // console.log("WYŁACZAM PRZYCISKI");
+    this.disableInputContainer();
     alphabetButtons.disableButtons();
   }
   enableConfirmBtn() {
     // console.log("WŁACZAM PRZYCISKI");
+    setTimeout(this.enableInputContainer, TIMER);
+
     alphabetButtons.enableButtons();
   }
   letterFromInputElement(letter) {
@@ -514,6 +513,11 @@ class GameLogic {
 
   gameLost() {
     // timer ?
+
+    pointsEarnedLose.innerHTML = `Zdobyłeś ${
+      game.points + player.points
+    } punktów`;
+    player.addPlayerToListAjax();
     loseWindow.classList.remove("disablePopup");
     /* 
       wyskakuje okno z zdobytymi punktami 
@@ -531,6 +535,9 @@ class GameLogic {
 
   gameWon() {
     player.addPoints(1000);
+    pointsEarnedWin.innerHTML = `Zdobyłeś  ${
+      game.points + player.points
+    } punktów`;
     winWindow.classList.remove("disablePopup");
   }
   restartGame() {
@@ -624,14 +631,14 @@ class AlphabetButtons {
     });
   }
   disableButtons() {
-    console.log("DISABLE  LIST ALFABET");
+    // console.log("DISABLE  LIST ALFABET");
     for (i = 0; i < this.alphabetObjectsButton.length; i++) {
       this.alphabetObjectsButton[i].disabled = true;
     }
   }
 
   enableButtons() {
-    console.log("ENABLE  LIST ALFABET");
+    // console.log("ENABLE  LIST ALFABET");
     for (i = 0; i < this.alphabetObjectsButton.length; i++) {
       this.alphabetObjectsButton[i].disabled = false;
     }
@@ -826,7 +833,7 @@ function checkingAllRowsForLetter(letter) {
   // add logic if word in row
   let positionPickedLetter = checkingPickedLetter(gameObject.catchword, letter);
   if (positionPickedLetter.length) {
-    console.log(positionPickedLetter.length);
+    showMessageAndDelete(`Zakręć kołem`);
     game.multiply = positionPickedLetter.length;
     booleanLetterInWords = true;
     addLetterOnPositionRow(
@@ -836,8 +843,7 @@ function checkingAllRowsForLetter(letter) {
       positionIndexStartLetter(gameObject.catchword, 0)
     );
   } else {
-    // tracisz zycie
-    // console.log("No letter in word");
+    showInstantMessage("Hasło nie zawiera takiej litery");
   }
 
   return booleanLetterInWords;
@@ -850,22 +856,32 @@ function checkingAllRowsForLetter(letter) {
 Testing area
 
 */
+function showPointsInPopUp() {}
 
-function checkIfValueIsGreaterThenFullCircle(value) {
-  if (value + 90 > 360) {
-    return value + 90 - 360;
-  }
-  return value + 90;
-}
-
-function showError(message) {
-  const errorDiv = document.getElementById("errorMessage");
-  errorDiv.textContent = message;
+function showMessage(message) {
+  showValueDiv.textContent = "";
   let timeoutId;
   clearTimeout(timeoutId);
   timeoutId = setTimeout(function () {
-    errorDiv.textContent = "";
-  }, 2000);
+    showValueDiv.innerHTML = `<p>${message}</p>`;
+  }, TIMER);
+}
+
+function showInstantMessage(message) {
+  showValueDiv.innerHTML = `<p>${message}</p>`;
+}
+
+function showMessageAndDelete(message) {
+  showValueDiv.innerHTML = `<p>${message}</p>`;
+  let timeoutId;
+  clearTimeout(timeoutId);
+  timeoutId = setTimeout(function () {
+    showValueDiv.innerHTML = "";
+  }, TIMER);
+}
+
+function clearDiv() {
+  showValueDiv.textContent = "";
 }
 
 /*
@@ -880,139 +896,50 @@ Wheel
 
 */
 
-function getLables(data) {
-  let labels = [];
+function createWheelValues(list) {
+  let objectList = [];
+  let startValue = 0;
+  let endValue = 0;
+  let elementDegree = 360 / list.length;
 
-  for (i = 0; data.length > i; i++) {
-    labels.push(i + 1);
+  for (let value of list) {
+    let tempObject = {
+      minDegree: startValue,
+      maxDegree: endValue + elementDegree - 1,
+      value: value,
+    };
+    objectList.push(tempObject);
+    startValue += elementDegree;
+    endValue += elementDegree;
   }
-  return labels;
+  // console.log(objectList);
+  return objectList;
 }
-function createDegreeValues(dataValues) {
-  let values = [];
-  let minDegree = 0;
-  let pieceDegree = 360 / dataValues.length;
-  // console.log(pieceDegree);
-  for (i = 0; dataValues.length > i; i++) {
-    if (i == 0) {
-      values.push({
-        minDegree: minDegree,
-        maxDegree: minDegree + pieceDegree,
-        value: dataValues[i],
-      });
-    } else {
-      values.push({
-        minDegree: minDegree + 1,
-        maxDegree: minDegree + pieceDegree,
-        value: dataValues[i],
-      });
-    }
-    minDegree = pieceDegree + minDegree;
-  }
-  return values;
-}
-function reverseLabelValues(dataValues) {
-  const formatedValues = [];
 
-  const dataValuesDivided = dataValues.length / 4;
-
-  for (i = 0; dataValues.length > i; i++) {
-    if (i == 0) {
-      const tempList = [];
-
-      for (j = 0; dataValuesDivided > j; j++) {
-        tempList.push(dataValues[j]);
+function getValueFromWheel(value) {
+  let spinTime = Math.floor(value / 360);
+  let simplyfyValue = value - spinTime * 360;
+  for (i = 0; i < rotationValues.length; i++) {
+    if (simplyfyValue >= rotationValues[i].minDegree) {
+      if (simplyfyValue <= rotationValues[i].maxDegree) {
+        game.spinWheel(rotationValues[i].value);
       }
-      tempList.reverse().forEach((element) => {
-        formatedValues.push(element);
-      });
-      formatedValues.concat(tempList);
-    }
-    if (i >= dataValuesDivided) {
-      // console.log(dataValues.length - i + dataValuesDivided - 1);
-      formatedValues.push(
-        dataValues[dataValues.length - i + dataValuesDivided - 1]
-      );
     }
   }
-
-  return formatedValues;
 }
-function createData(dataValues) {
-  const data = [];
-  for (i = 0; dataValues.length > i; i++) {
-    data.push(1);
-  }
-  return data;
+function resetImgDegree() {
+  wheelImg.style.transform = ` rotate(${0}deg)`;
 }
 
-let rotationValues = createDegreeValues(valuesWheel);
+function getRandomValueAndRotate() {
+  let hzValue = 4;
+  let testValue = Math.ceil(Math.random() * 360);
+  let value = 360 * hzValue * game.numberOfSpins + testValue;
+  game.numberOfSpins += 1;
+  wheelImg.style.transform = ` rotate(${value}deg)`;
+  getValueFromWheel(value);
+}
 
-// console.log(rotationValues);
-let dataSetToChart = createData(valuesWheel);
+// let rotationValues = createDegreeValues(valuesWheel); Old with datachart
 
-let myChart = new Chart(wheel, {
-  plugins: [ChartDataLabels],
-  type: "pie",
-  data: {
-    // labels: getLables(rotationValues),
-    labels: reverseLabelValues(valuesWheel),
-    //Settings for dataset/pie
-    datasets: [
-      {
-        backgroundColor: pieColors,
-        data: dataSetToChart,
-      },
-    ],
-  },
-  options: {
-    //Responsive chart
-    elements: {
-      arc: {
-        backgroundColor: "rgba(0,0,0,0.1)",
-        borderColor: "black",
-      },
-    },
-    responsive: true,
-    animation: { duration: 0 },
-    plugins: {
-      position: "left",
-      tooltip: false,
-      legend: false,
-      datalabels: {
-        borderColor: "black",
-        // rotation: 60,
-        color: "#ffffff",
-        // anchor: "end", // Change the position of data labels to end
-        align: "center",
-        // anchor: "end",
-        // offset: -50,
-
-        transform: "45%",
-
-        // rotation: "45",
-
-        rotation: function (ctx) {
-          return (
-            rotationValues[ctx.dataIndex].minDegree +
-            ctx.chart.options.rotation +
-            90 +
-            circleRotationHelper.degree
-          );
-        },
-        formatter: (_, context) => context.chart.data.labels[context.dataIndex],
-        font: (context) => {
-          if (context.chart.data.labels[context.dataIndex].length > 5) {
-            return { size: 12, family: "Peralta" };
-          } else {
-            return { size: 20, family: "Peralta" };
-          }
-        },
-      },
-      display: "auto",
-    },
-  },
-});
-
-// myChart.defaults.elements.arc.borderColor = "#36A2EB";
-// myChart.defaults.borderColor = ;
+// getRandomValueAndRotate();
