@@ -36,7 +36,7 @@
 .firstRowLettersField {
   display: flex;
   flex-direction: row;
-  display: none;
+  /* display: none; */
 }
 .secondRowLettersField {
   display: flex;
@@ -45,7 +45,7 @@
 .thirdRowLettersField {
   display: flex;
   flex-direction: row;
-  display: none;
+  /* display: none; */
 }
 .fourthRowLettersField {
   display: flex;
