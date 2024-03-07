@@ -6,10 +6,6 @@
   --funky-font: "Peralta", serif;
 }
 
-@font-face {
-  font-family: "Peralta";
-}
-
 .field {
   display: flex;
   height: 40px;
@@ -23,6 +19,10 @@
   flex-direction: row;
   font-size: 26px;
   align-items: center;
+
+  font-family: "Peralta", sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
 }
 
 .letterfields {
@@ -36,7 +36,6 @@
 .firstRowLettersField {
   display: flex;
   flex-direction: row;
-  /* display: none; */
 }
 .secondRowLettersField {
   display: flex;
@@ -45,7 +44,6 @@
 .thirdRowLettersField {
   display: flex;
   flex-direction: row;
-  /* display: none; */
 }
 .fourthRowLettersField {
   display: flex;
@@ -65,7 +63,6 @@
   /* box-shadow: 0 4em 5em rgba(27, 8, 53, 0.2); */
 }
 .inputContainer {
-  width: 100%;
   background: #fff;
   width: 450px;
   padding: 20px;
@@ -86,103 +83,143 @@
 
 #alphabet {
   /* @include clear; */
-  margin: 15px auto;
-  padding: 0;
-  max-width: 900px;
+  margin: 0;
+  text-align: center;
 }
+.alpha_title {
+  font-family: "Peralta", sans-serif;
+  font-weight: 400;
+  font-size: 22px;
+  color: #37363a;
+}
+
 #alphabet button {
-  float: left;
-  margin: 0 10px 10px 0;
+  display: inline-block;
+  border-radius: 5px;
+  margin: 5px;
   list-style: none;
-  width: 35px;
-  height: 30px;
-  padding-top: 10px;
+  width: 45px;
+  height: 40px;
+  padding-top: 0px;
   background: white;
   /* color: base-color; */
   cursor: pointer;
   /* @include corners(5px); */
   border: solid 1px white;
 
+  font-family: "Peralta", sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  color: #37363a;
+
   &:hover {
     /* background: $base-color; */
     border: solid 1px grey;
-    color: grey;
   }
 }
 
 /*
-
-
-navBar
-
-
-*/
+  
+  
+  navBar
+  
+  
+  */
 .controlPanel {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  /* justify-content: space-evenly; */
-  align-items: center;
-  height: 3rem;
-  width: 100%;
-  background-color: rgb(230, 230, 230, 1);
+  /*
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        height: 3rem;
+        width: 100%;
+        background-color: rgb(230, 230, 230, 1);*/
+  height: 70px;
 }
 .lifeBar {
+  margin: 3px 0 0 10px;
+  width: 60px;
+  height: 16px;
+
+  /*
   display: flex;
-  flex-direction: row;
+  flex-direction: row;*/
 }
 
 .hearth {
-  height: 15px;
-  width: 15px;
-  background-color: red;
-  margin-left: 10px;
+  float: left;
+  width: 19px;
+  height: 16px;
+  background: url("images/img/heart.png") no-repeat 50% 50%;
+  margin: 0 1px 0 0;
 }
 
 .lost {
-  background-color: whitesmoke;
+  background: url("images/img/heart_no.png") no-repeat 50% 50%;
 }
+
 .nameContainer {
-  margin: 5px;
-  display: flex;
-  flex-direction: column;
-  color: var(--main-color);
 }
 .user {
-  margin-left: 10px;
+  /*
+  margin-left: 10px;*/
+  float: left;
+  width: 30%;
 }
 .userName {
-  /* padding-left: 5px; */
-  align-items: center;
-  justify-content: center;
+  /* padding-left: 5px; 
+    align-items: center;
+    justify-content: center;*/
+  font-family: "Peralta", sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  color: #393186;
 }
 .nameWithHearth {
-  display: flex;
-  flex-direction: row;
+  /*
+    display: flex;
+    flex-direction: row;*/
 }
 .pointContainer {
+  /*
+        text-align: right;
+        margin-right: 10px;*/
+  float: right;
+  width: 30%;
   text-align: right;
-  margin-right: 10px;
 }
 
 .category {
+  float: left;
+  width: 40%;
+  background: #fff;
+  text-align: center;
+  font-family: "Peralta", sans-serif;
+  font-weight: 400;
+  font-size: 25px;
+  color: #393186;
+  text-transform: uppercase;
+  /*
   font-size: 30px;
   background-color: #f9f9f9;
   border-radius: 8px;
   padding: 0 24px 0 24px;
   border: #f9f9f9 1px solid;
-  color: var(--main-color);
+  color: var(--main-color);*/
 }
 .points {
-  color: var(--main-color);
+  font-family: "Peralta", sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  color: #393186;
 }
 /* 
-
-
-wheel style
-
-
-*/
+  
+  
+  wheel style
+  
+  
+  */
 #wheelImg {
   height: 100%;
   width: 100%;
@@ -229,20 +266,14 @@ wheel style
   flex-direction: row;
   justify-content: space-evenly;
 }
+/*
+  * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+  */
 
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-
-body {
-  height: 100%;
-  background: whitesmoke;
-  font-family: "Peralta", serif;
-  font-weight: 400;
-  font-style: normal;
-}
 .wrapper {
   display: flex;
   align-items: center;
@@ -267,11 +298,12 @@ body {
 .container {
   position: relative;
   /* width: 100%;
-  height: 100%; */
-  height: 300px;
-  min-height: 300px;
-  width: 300px;
+    height: 100%; */
+  height: 350px;
+  min-height: 350px;
+  width: 350px;
 }
+
 .imgContainer {
   position: relative;
   height: 100%;
@@ -280,6 +312,7 @@ body {
   translate: (50%, 50%);
   z-index: -1000;
 }
+
 #wheel {
   max-height: inherit;
   width: inherit;
@@ -292,30 +325,33 @@ body {
   }
 }
 #spin-btn {
-  height: 36px;
-  width: 130px;
-  border-radius: 20px;
-  cursor: pointer;
   margin-top: 30px;
-  justify-content: center;
-
-  border: 0;
-
-  background-color: #d3bb1a;
-  color: #ffffff;
-  text-transform: uppercase;
-  font-size: 26px;
+  /*
+    height: 36px;
+    width: 130px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-top: 30px;
+    justify-content: center;
+  
+    border: 0;
+    background-color: #d3bb1a;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-size: 26px;
+    font-weight: 700;*/
 
   /* letter-spacing: 0.1em; */
-  /* font-weight: 700; */
+  /* background: radial-gradient(#fdcf3b 50%, #d88a40 85%); */
 }
-img {
-  position: absolute;
-  width: 4em;
-  top: 50%;
-  right: 50%;
-  /* transform: translate(0); */
-}
+/*
+  img {
+    position: absolute;
+    width: 4em;
+    top: 50%;
+    right: 50%;
+     transform: translate(0); 
+  }*/
 #final-value {
   font-size: 1.5em;
   text-align: center;
@@ -329,14 +365,14 @@ img {
   display: row;
 }
 /* 
-@media screen and (max-width: 768px) {
-  .wrapper {
-    font-size: 12px;
-  }
-  img {
-    right: -5%;
-  }
-} */
+  @media screen and (max-width: 768px) {
+    .wrapper {
+      font-size: 12px;
+    }
+    img {
+      right: -5%;
+    }
+  } */
 
 .disabled-btn {
   background-color: grey;
@@ -347,10 +383,11 @@ img {
 }
 
 /*
+  
+   popUp section
+  
+  */
 
- popUp section
-
-*/
 .popMessageContainer {
   display: flex;
   align-items: center;
@@ -358,7 +395,7 @@ img {
 }
 
 .popupWindow {
-  /* display: none; */
+  /* */
   z-index: 100;
   position: absolute;
   transform: translate(-50%, -50%);
@@ -366,7 +403,7 @@ img {
   left: 50%;
   height: 100%;
   width: 100%;
-  background-color: whitesmoke;
+  background-color: white;
 }
 .playerValidationDiv {
   color: white;
@@ -384,6 +421,7 @@ img {
   width: 250px;
   background-color: transparent;
 }
+
 .popupContainer {
   height: 100%;
   display: flex;
@@ -416,25 +454,31 @@ img {
 }
 
 .playerContainer {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  display: block;
   background-color: var(--main-color);
-  height: 20rem;
-  align-items: center;
-  padding: 30px;
+  height: auto;
+  padding: 10px 30px 30px;
   border-radius: 20px;
   color: white;
+  text-align: center;
+  width: 320px;
 }
 .playerContainer input {
   border-radius: 10px;
-  height: 30px;
-  margin: 20px;
+  height: 18px;
+  margin: 20px 0 40px;
   padding: 10px;
+  font-size: 18px;
+  color: #37363a;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  width: 240px;
 }
 
 .playerContainer p {
-  font-size: 36px;
+  font-family: "Peralta", sans-serif;
+  font-weight: 400;
+  font-size: 25px;
 }
 
 .closePopup {
@@ -450,8 +494,8 @@ img {
 }
 
 /* 
-  All purpose class
-*/
+    All purpose class
+  */
 
 .shadowElement {
   -webkit-box-shadow: 8px 8px 24px -5px rgba(66, 68, 90, 1);
@@ -461,18 +505,29 @@ img {
 
 .basicFont {
   font-family: "Inter", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
 }
 
 .btn-yellow {
-  border-radius: 60px;
-  font-family: "Inter", sans-serif;
-  color: #ffffff;
-  margin: 12px, 36px, 10px, 36px;
-  width: 168px;
-  height: 36px;
-  background-color: var(--btn-color);
+  /*
+    border-radius: 60px;
+    font-family: "Inter", sans-serif;
+    color: #ffffff;
+    margin: 12px, 36px, 10px, 36px;
+    width: 168px;
+    height: 36px;
+    background-color: var(--btn-color);
+  
+    box-shadow: 0px -4px 10px 1px rgba(254, 237, 13, 1);*/
+}
 
-  box-shadow: 0px -4px 10px 1px rgba(254, 237, 13, 1);
+#playerValidationDiv {
+  font-family: "Peralta", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: #fff;
+  margin-bottom: 30px;
 }
 .showValue {
   width: 33%;
