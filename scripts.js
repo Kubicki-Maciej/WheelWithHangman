@@ -44,6 +44,90 @@ const catchWordDict = {
   ],
 };
 
+class CatchWordGenerator {
+  constructor(catchWordObj) {
+    this.catchWordObject = catchWordObj;
+    // console.log(catchWordObj);
+    this.catchwordList = [];
+    this.categoryList = [];
+    this.lengthItemInCategorys = [];
+    this.allCatchWords = 0;
+    this.createCategoryList();
+    this.lengthOfAllItemsInCategorys();
+    this.returnRandomCatchWordAndCategory();
+  }
+  createCategoryList() {
+    // console.log(this.catchWordObject);
+    let category = Object.keys(this.catchWordObject);
+    this.categoryList = category;
+    // console.log(this.categoryList);
+    // this.lengthOfAllItemsInCategorys();
+  }
+  lengthOfAllItemsInCategorys() {
+    // console.log("this-");
+    let tempValue = 0;
+    for (let w = 0; w < this.categoryList.length; w++) {
+      let value = this.catchWordObject[this.categoryList[w]].length;
+      tempValue += value;
+      this.lengthItemInCategorys.push(value);
+    }
+    this.allCatchWords = tempValue;
+
+    // console.log(this.allCatchWords);
+  }
+  get_N_ItemFrom(n) {
+    let tempValue = 0;
+    console.log(`ilosc kategori ${this.lengthItemInCategorys.length}`);
+    for (let i = 0; i < this.lengthItemInCategorys.length; i++) {
+      tempValue += this.lengthItemInCategorys[i];
+      if (n <= tempValue) {
+        // console.log("tempValue");
+        // console.log(tempValue);
+        return {
+          indexCategory: i,
+          indexCatword: tempValue - n,
+        };
+      }
+    }
+  }
+  // randomNumber 6 categoryIndex: 0
+  returnRandomCatchWordAndCategory() {
+    let randomNumber = Math.floor(Math.random() * this.allCatchWords) + 1;
+    randomNumber = 0;
+    let pickedCatchwordIndexAndCategoryIndex =
+      this.get_N_ItemFrom(randomNumber);
+    let category =
+      this.categoryList[pickedCatchwordIndexAndCategoryIndex.indexCategory];
+    console.log(randomNumber);
+    console.log(this.lengthItemInCategorys);
+    console.log(pickedCatchwordIndexAndCategoryIndex);
+    console.log(category);
+    let catchword;
+    if (pickedCatchwordIndexAndCategoryIndex.indexCatword == 0) {
+      catchword =
+        this.catchWordObject[category][
+          pickedCatchwordIndexAndCategoryIndex.indexCatword
+        ];
+    } else {
+      catchword =
+        this.catchWordObject[category][
+          pickedCatchwordIndexAndCategoryIndex.indexCatword
+        ];
+    }
+
+    console.log(catchword);
+    // console.log(catchword, category);
+    return { catchword: catchword.toLowerCase(), category: category };
+  }
+  returnTestCatchWord() {
+    return {
+      catchword: "tsst".toLowerCase(),
+      category: "tsst",
+    };
+  }
+}
+const catchWordGenerator = new CatchWordGenerator(catchWordDict);
+
 const numbersOfBlocksFields = 26;
 
 // building parms
@@ -281,71 +365,6 @@ class CategoryAndCatchword {
   cleanCategory() {}
 }
 
-class CatchWordGenerator {
-  constructor(catchWordObj) {
-    this.catchWordObject = catchWordObj;
-    // console.log(catchWordObj);
-    this.catchwordList = [];
-    this.categoryList = [];
-    this.lengthItemInCategorys = [];
-    this.allCatchWords = 0;
-    this.createCategoryList();
-    this.lengthOfAllItemsInCategorys();
-    this.returnRandomCatchWordAndCategory();
-  }
-  createCategoryList() {
-    // console.log(this.catchWordObject);
-    let category = Object.keys(this.catchWordObject);
-    this.categoryList = category;
-    // console.log(this.categoryList);
-    // this.lengthOfAllItemsInCategorys();
-  }
-  lengthOfAllItemsInCategorys() {
-    // console.log("this-");
-    let tempValue = 0;
-    for (let w = 0; w < this.categoryList.length; w++) {
-      let value = this.catchWordObject[this.categoryList[w]].length;
-      tempValue += value;
-      this.lengthItemInCategorys.push(value);
-    }
-    this.allCatchWords = tempValue;
-
-    // console.log(this.allCatchWords);
-  }
-  get_N_ItemFrom(n) {
-    let tempValue = 0;
-    for (let i = 0; i < this.lengthItemInCategorys.length; i++) {
-      tempValue += this.lengthItemInCategorys[i];
-      if (n <= tempValue) {
-        // console.log("tempValue");
-        // console.log(tempValue);
-        return {
-          indexCategory: i,
-          indexCatword: tempValue - n,
-        };
-      }
-    }
-  }
-  returnRandomCatchWordAndCategory() {
-    let randomNumber = Math.floor(Math.random() * this.allCatchWords);
-    let pickedCatchwordIndexAndCategoryIndex =
-      this.get_N_ItemFrom(randomNumber);
-    let category =
-      this.categoryList[pickedCatchwordIndexAndCategoryIndex.indexCategory];
-    let catchword =
-      this.catchWordObject[category][
-        pickedCatchwordIndexAndCategoryIndex.indexCatword
-      ];
-    // console.log(catchword, category);
-    return { catchword: catchword.toLowerCase(), category: category };
-  }
-  returnTestCatchWord() {
-    return {
-      catchword: "tsst".toLowerCase(),
-      category: "tsst",
-    };
-  }
-}
 class Player {
   constructor(playerLife) {
     this.name = "";
@@ -698,7 +717,6 @@ addLife(player.playerLife);
 const game = new GameLogic();
 const alphabetButtons = new AlphabetButtons();
 const circleRotationHelper = new RotationHelper();
-const catchWordGenerator = new CatchWordGenerator(catchWordDict);
 
 // adding first and last row of letters on html
 for (i = 0; i < numbersOfBlocksFields; i++) {
