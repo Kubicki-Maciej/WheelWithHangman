@@ -1,7 +1,8 @@
 // GAME BUILDING PARAMS
 const TIMER = 2000;
-const showCatchwordInConsole = true;
-const DEBUG = false;
+const TIMERBUTONSHOW = 1000;
+const showCatchwordInConsole = false;
+const DEBUG = true;
 const valuesWheel = [10, 50, 200, 250, "utrata kolejki", 100, 150, "bankrut"];
 let count = 0;
 let resultValue = 101;
@@ -111,7 +112,7 @@ class CatchWordGenerator {
     } else {
       catchword =
         this.catchWordObject[category][
-          pickedCatchwordIndexAndCategoryIndex.indexCatword
+          pickedCatchwordIndexAndCategoryIndex.indexCatword - 1
         ];
     }
 
@@ -196,6 +197,14 @@ let pointsEarnedWin = document.getElementById("earnedPointsWin");
 let pointsEarnedLose = document.getElementById("earnedPointsLose");
 let points = document.getElementById("points");
 let playerValidationDiv = document.getElementById("playerValidationDiv");
+// elements to solve window
+let solveBtn = document.getElementById("sol-btn");
+let solveWindow = document.getElementById("solveWindow");
+let cancelSolveWindowBtn = document.getElementById("cancelSolveWindowBtn");
+let checkCatchwordBtn = document.getElementById("checkChatwordBtn");
+let inputFieldSolve = document.getElementById("solveInput");
+let textMessageSolve = document.getElementById("textMessageSolve");
+// end solve window
 
 // let wheelImg = document.getElementById("wheelImg");
 
@@ -220,6 +229,34 @@ const valueGenerator = (angleValue) => {
 };
 
 // listeners
+
+//elements solve window
+solveBtn.addEventListener("click", () => {
+  inputFieldSolve.value = "";
+  solveWindow.classList.remove("disablePopup");
+  // disable btn field
+  // disable spin field
+  // disable solveBtn
+});
+
+cancelSolveWindowBtn.addEventListener("click", () => {
+  solveWindow.classList.add("disablePopup");
+  // enable btn field
+});
+checkCatchwordBtn.addEventListener("click", () => {
+  // get value from input field
+  let solveValue = inputFieldSolve.value;
+  console.log(solveValue);
+  game.inputFieldSolve(solveValue);
+
+  // if value == pass
+  //    win game
+  // if not lose life close window
+  //
+});
+
+//solve windows
+
 btnElementPlayer.addEventListener("click", () => {
   if (
     inputElementPlayer.value.length >= 3 &&
@@ -440,6 +477,21 @@ class GameLogic {
     this.win = false;
     this.disableSpinWheel();
   }
+
+  inputFieldSolve(catchword) {
+    if (catchword == categoryAndCatchword.catchword) {
+      setTimeout(this.gameWon(), 500);
+      showInstantMessage("hasło się zgadza");
+      solveWindow.classList.add("disablePopup");
+      // this.gameWon()
+    } else {
+      setTimeout(this.loseLife(), 500);
+      showInstantMessage("hasło nie się zgadza");
+      solveWindow.classList.add("disablePopup");
+      // this.loseLife()
+    }
+  }
+
   isWin() {
     this.win = true;
   }
@@ -548,7 +600,9 @@ class GameLogic {
   enableInputContainer() {
     // console.log("WŁACZAM KOŁO");
     spinBtn.disabled = true;
-    inputContainer.classList.remove("disablePopup");
+    setTimeout(function () {
+      inputContainer.classList.remove("disablePopup");
+    }, TIMERBUTONSHOW);
   }
 
   disableConfirmBtn() {

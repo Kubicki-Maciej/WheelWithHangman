@@ -1,0 +1,17 @@
+Odnośnie koła fortuny - robimy wersję prostą wpisywania hasła.
+1. Dodałem button: Podaj hasło
+2. Po kliknięciu odpala się okno takie jak startowe tylko zamiast Podaj nazwę -> Podaj hasło, Rozpocznij grę -> Sprawdź i dodajemy obok button: Zamknij
+3. I teraz jeśli: hasło jest błędne to w polu komunikatu pojawia się tekst: Błędne hasło, tracisz szansę.
+4. Jeśli hasło poprawne - dajemy komunikat: Brawo, otrzymujesz 1000 punktów! I dalej dzieje się wszystko to co po zakończeniu gry jak do tej pory.
+5. A jeśli kliknie Zamknij to nie dzieje się nic.
+
+
+
+1) Jeżeli źle odgadniemy tracimy życie ( tracisz szanse) + nie możemy więcej z tego skorzystać czy np nie możemy więcej tego skorzystać w tym haśle?
+2) Hasło rozumiem wpisywane z input.
+1. Możemy odgadywać aż do skończenia żyć/szans.
+2. Tak. Taki jak przy logowaniu.
+
+
+
+
